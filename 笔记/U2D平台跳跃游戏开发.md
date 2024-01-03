@@ -7,6 +7,7 @@
 - **Sprite模式**：多个
 - **每单位像素数**：16
 - **过滤模式**：点（无过滤器）
+- **压缩**：无
 
 <img src="AssetMarkdown/PlayerSheet.png" alt="PlayerSheet" style="zoom:80%;" />
 
@@ -16,7 +17,7 @@
 
 生成动画：
 
-- 选择第1帧，拖入场景，生成原始人物
+- 选择第1帧，拖入场景，生成原始人物`Player`
 - 选择动画对应的多个序列帧，拖拽至人物身上，自动创建动画
 
 # 02、2D角色移动
@@ -292,6 +293,76 @@ public class PlayerAttack : MonoBehaviour {
     }
     void AttackReset() {
         canAttack = true;
+    }
+}
+```
+
+# 09、角色攻击：Enemy
+
+敌人素材：`Assets/Sprite/Bat.png`
+
+- **Sprite模式**：多个
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+<img src="AssetMarkdown/Bat.png" alt="Bat" style="zoom:80%;" />
+
+切割动画：
+
+- 每个单元的尺寸：32×32像素
+
+生成动画：
+
+- 选择第1帧，拖入场景，生成原始人物`EnemyBat`
+- 选择动画对应的多个序列帧，拖拽至人物身上，自动创建动画
+
+设置`EnemyBat`的`Tag`为：Enemy
+
+为角色添加组件
+
+- `Box Collider 2D`：碰撞体组件，用于表示蝙蝠的碰撞
+  - **是触发器**：勾选
+- `EnemyBat`：自定义脚本，用于控制蝙蝠
+
+添加脚本：`Assets/Scripts/Enemy`，控制所有的敌人类
+
+```c#
+public class Enemy : MonoBehaviour {
+    [Tooltip("敌人的血量")]
+    public int health = 5;
+    [Tooltip("敌人的伤害")]
+    public int damage = 1;
+
+    protected void Update() {
+        if (health <= 0) {
+            Destroy(gameObject);
+        }
+    }
+
+    public void TakeDamage(int damage) {
+        health -= damage;
+    }
+}
+
+```
+
+添加脚本：`Assets/Scripts/EnemyBat`，控制蝙蝠
+
+```c#
+public class EnemyBat : Enemy {
+    protected void Update(){
+        base.Update();
+    }
+}
+```
+
+修改脚本：`Assets/Scripts/PlayerAttack`
+
+```c#
+private void OnTriggerEnter2D(Collider2D collision) {
+    if(collision.gameObject.tag.Equals("Enemy")) {
+        collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
     }
 }
 ```

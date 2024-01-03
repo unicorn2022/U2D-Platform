@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     [Tooltip("角色攻击的伤害")]
-    public int damage = 1;
+    public int damage = 2;
 
     private Animator animator;
     private PolygonCollider2D collider;
@@ -53,5 +53,15 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     void AttackReset() {
         canAttack = true;
+    }
+
+    /// <summary>
+    /// 攻击碰撞体碰撞到敌人, 造成伤害
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if(collision.gameObject.tag.Equals("Enemy")) {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        }
     }
 }
