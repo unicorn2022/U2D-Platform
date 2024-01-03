@@ -439,3 +439,53 @@ public class EnemyBat : Enemy {
 }
 ```
 
+# 12、敌人：受伤粒子特效
+
+新建粒子系统，重命名为`BloodEffect`，并创建预制体
+
+- **旋转**：(90, 0, 0)
+- **渲染器**：
+  - **材质**：Sprite-Default
+- **Particle System**：
+  - **起始速度**：3
+  - **起始颜色**：红色
+  - **循环播放**：取消勾选
+  - **持续时间**：1
+  - **起始生命周期**：0.5
+  - **起始大小**：0.1
+  - **重力修改器**：0.5
+  - **模拟速度**：2
+- **形状**：
+  - **角度**：0
+  - **半径**：0.5
+- 添加自定义脚本：`BloodEffect`
+
+新建脚本：`Assets/Scripts/BloodEffect`
+
+```c#
+public class BloodEffect : MonoBehaviour {
+    [Tooltip("销毁时间")]
+    public float timeToDestroy = 1f;
+    void Start() {
+        Destroy(gameObject, timeToDestroy);
+    }
+}
+```
+
+修改脚本：`Assets/Scripts/Enemy`
+
+```c#
+public GameObject bloodEffect;
+
+public void TakeDamage(int damage) {
+    health -= damage;
+
+    // 受伤后红色闪烁
+    spriteRenderer.color = Color.red;
+    Invoke("ResetColor", flashTime);
+
+    // 受伤后, 生成粒子效果
+    Instantiate(bloodEffect, transform.position, Quaternion.identity);
+}
+```
+

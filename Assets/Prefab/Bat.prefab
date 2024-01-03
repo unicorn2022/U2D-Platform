@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1847290048537948366}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2, y: 0, z: 0}
+  m_LocalPosition: {x: -1.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 3681580596865121568}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 4, z: 0}
+  m_LocalPosition: {x: 1.5, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -230,6 +230,7 @@ MonoBehaviour:
   health: 5
   damage: 1
   flashTime: 0.2
+  bloodEffect: {fileID: 7260548850510248351, guid: 780a109356f6d8a4fa5de2bfa44cf693, type: 3}
   speed: 2
   startWaitTime: 0.2
   leftDownPosition: {fileID: 6026327682728323024}
