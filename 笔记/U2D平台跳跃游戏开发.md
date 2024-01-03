@@ -58,8 +58,8 @@
 
 修改角色的Animator：
 
-- Idle => Run：参数`Running`为`true`
-- Run => Idle：参数`Running`为`false`
+- Idle => Run：参数`Run`为`true`
+- Run => Idle：参数`Run`为`false`
 
 <img src="AssetMarkdown/image-20240103165109666.png" alt="image-20240103165109666" style="zoom:80%;" />
 
@@ -74,16 +74,15 @@ void Run() {
 
     // 控制动画的切换
     bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
-    animator.SetBool("Running", playerHasXAxisSpeed);
-}
+    animator.SetBool("Run", playerHasXAxisSpeed);
+    animator.SetBool("Idle", !playerHasXAxisSpeed);
 
-void Flip() {
-    bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
+    // 控制是否需要翻转角色
     if (playerHasXAxisSpeed) {
-        if(rigidbody.velocity.x > 0.1f) {
+        if (rigidbody.velocity.x > 0.1f) {
             transform.localRotation = Quaternion.Euler(0, 0, 0);
         }
-        if(rigidbody.velocity.x < -0.1f) {
+        if (rigidbody.velocity.x < -0.1f) {
             transform.localRotation = Quaternion.Euler(0, 180, 0);
         }
     }
@@ -106,6 +105,44 @@ void Jump() {
 
 bool IsGrounded() {
     return feetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
+}
+```
+
+# 05、角色跳跃动画：Jump & Fall & Idle & Run
+
+修改角色的Animator：
+
+- Idle => Jump：参数`Jump`为`true`
+- Jump => Fall：参数`Jump`为`false`，参数`Fall`为`true`
+- Fall => Idle：参数`Fall`为`false`，参数`Idle`为`true`
+- Run => Jump：参数`Jump`为`true`
+- Fall => Run：参数`Fall`为`false`，参数`Run`为`true`
+
+<img src="AssetMarkdown/image-20240103172825345.png" alt="image-20240103172825345" style="zoom:80%;" />
+
+修改脚本：`Assets/Scripts/PlayerController`
+
+```c#
+void Jump() {
+    if (Input.GetButtonDown("Jump") && IsGrounded()) {
+        // 通过刚体组件, 控制角色跳跃
+        Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
+        rigidbody.velocity = Vector2.up * jumpVelocity;
+
+        // 控制动画的切换
+        animator.SetBool("Jump", true);
+    }
+
+    // 纵向速度小于0, 表示角色正在下落
+    if(rigidbody.velocity.y < 0.0f) {
+        animator.SetBool("Jump", false);
+        animator.SetBool("Fall", true);
+    }
+
+    // 角色落地后, 重置动画
+    if(IsGrounded()) {
+        animator.SetBool("Fall", false);
+    }
 }
 ```
 

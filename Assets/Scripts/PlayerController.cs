@@ -24,12 +24,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Run();
-        Flip();
         Jump();
     }
 
     /// <summary>
-    /// 水平方向的移动
+    /// 角色移动, 及其动画的切换
     /// </summary>
     void Run() {
         // 通过刚体组件, 控制角色移动
@@ -39,31 +38,42 @@ public class PlayerController : MonoBehaviour
 
         // 控制动画的切换
         bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
-        animator.SetBool("Running", playerHasXAxisSpeed);
-    }
+        animator.SetBool("Run", playerHasXAxisSpeed);
+        animator.SetBool("Idle", !playerHasXAxisSpeed);
 
-    /// <summary>
-    /// 根据移动速度, 翻转角色
-    /// </summary>
-    void Flip() {
-        bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
+        // 控制是否需要翻转角色
         if (playerHasXAxisSpeed) {
-            if(rigidbody.velocity.x > 0.1f) {
+            if (rigidbody.velocity.x > 0.1f) {
                 transform.localRotation = Quaternion.Euler(0, 0, 0);
             }
-            if(rigidbody.velocity.x < -0.1f) {
+            if (rigidbody.velocity.x < -0.1f) {
                 transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
         }
     }
 
     /// <summary>
-    /// 角色跳跃
+    /// 角色跳跃, 及其动画的切换
     /// </summary>
     void Jump() {
         if (Input.GetButtonDown("Jump") && IsGrounded()) {
+            // 通过刚体组件, 控制角色跳跃
             Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
             rigidbody.velocity = Vector2.up * jumpVelocity;
+            
+            // 控制动画的切换
+            animator.SetBool("Jump", true);
+        }
+
+        // 纵向速度小于0, 表示角色正在下落
+        if(rigidbody.velocity.y < 0.0f) {
+            animator.SetBool("Jump", false);
+            animator.SetBool("Fall", true);
+        }
+
+        // 角色落地后, 重置动画
+        if(IsGrounded()) {
+            animator.SetBool("Fall", false);
         }
     }
 
@@ -76,4 +86,5 @@ public class PlayerController : MonoBehaviour
     bool IsGrounded() {
         return feetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
+
 }

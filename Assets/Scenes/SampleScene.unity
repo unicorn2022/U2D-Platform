@@ -445,6 +445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runSpeed: 10
+  jumpSpeed: 5
 --- !u!1 &2090753879
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +457,7 @@ GameObject:
   - component: {fileID: 2090753881}
   - component: {fileID: 2090753880}
   - component: {fileID: 2090753882}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
