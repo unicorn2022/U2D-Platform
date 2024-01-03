@@ -201,3 +201,41 @@ void Jump() {
 }
 ```
 
+# 07、角色攻击动画
+
+添加按键：`编辑|项目设置|输入管理器`
+
+- 修改大小为：`19`
+- 添加按键：`Attack`，肯定按钮为`j`
+
+修改角色的Animator：
+
+- Any State => Attack：触发器`Attack`
+- Attack => Idle：参数`Idle`为`true`，参数`Jump`为`false`，参数`Fall`为`false`，**有退出时间**
+- Attack => Run：参数`Run`为`true`，参数`Jump`为`false`，参数`Fall`为`false`，**有退出时间**
+- Attack => Jump：参数`Jump`为`true`，**有退出时间**
+- Attack => Fall：参数`Fall`为`true`，**有退出时间**
+
+<img src="AssetMarkdown/image-20240103175150437.png" alt="image-20240103175150437" style="zoom:80%;" />
+
+修改脚本：`Assets/Scripts/PlayerController`
+
+```c#
+private bool canAttack = true; // 角色是否可以攻击
+
+void Attack() {
+    // 由于控制了最短攻击间隔为0.5s, 因此可以长按攻击键持续攻击
+    if(Input.GetButton("Attack") && canAttack) {
+        animator.SetTrigger("Attack");
+        canAttack = false;
+        Invoke("AttackReset", 0.5f);
+    }
+}
+
+void AttackReset() {
+    canAttack = true;
+}
+```
+
+
+
