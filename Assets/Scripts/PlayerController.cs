@@ -6,12 +6,17 @@ public class PlayerController : MonoBehaviour
 {
     [Tooltip("角色水平方向的移动速度")]
     public float runSpeed = 5.0f;
-    [Tooltip("角色跳跃的速度")]
+    [Tooltip("角色一段跳跃的速度")]
     public float jumpSpeed = 8.0f;
+    [Tooltip("角色二段跳跃的速度")]
+    public float doubleJumpSpeed = 5.0f;
+
 
     private Rigidbody2D rigidbody;
     private Animator animator;
     private BoxCollider2D feetCollider;
+
+    private bool canDoubleJump = false; // 角色是否可以二段跳
 
 
     void Start()
@@ -56,13 +61,32 @@ public class PlayerController : MonoBehaviour
     /// 角色跳跃, 及其动画的切换
     /// </summary>
     void Jump() {
-        if (Input.GetButtonDown("Jump") && IsGrounded()) {
-            // 通过刚体组件, 控制角色跳跃
-            Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
-            rigidbody.velocity = Vector2.up * jumpVelocity;
+        if (Input.GetButtonDown("Jump")) {
+            // 在地面上, 进行一段跳
+            if (IsGrounded()) {
+                // 通过刚体组件, 控制角色跳跃
+                Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
+                rigidbody.velocity = Vector2.up * jumpVelocity;
+
+                // 可以进行二段跳
+                canDoubleJump = true;
             
-            // 控制动画的切换
-            animator.SetBool("Jump", true);
+                // 控制动画的切换
+                animator.SetBool("Jump", true);
+                animator.SetBool("Fall", false);
+            } 
+            // 在空中, 但可以进行二段跳
+            else if (canDoubleJump) {
+                Vector2 doubleJumpVelocity = new Vector2(0.0f, doubleJumpSpeed);
+                rigidbody.velocity = Vector2.up * doubleJumpVelocity;
+
+                // 不可以进行二段跳
+                canDoubleJump = false;
+
+                // 控制动画的切换
+                animator.SetBool("Jump", true);
+                animator.SetBool("Fall", false);
+            }
         }
 
         // 纵向速度小于0, 表示角色正在下落

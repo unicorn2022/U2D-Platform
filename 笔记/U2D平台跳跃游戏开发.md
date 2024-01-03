@@ -146,3 +146,58 @@ void Jump() {
 }
 ```
 
+# 06、角色二段跳
+
+修改角色的Animator：
+
+- Fall => Jump：参数`Jump`为`true`
+
+> 由于二段跳动画和一段跳相同，因此没有添加二段跳的状态机
+
+<img src="AssetMarkdown/image-20240103173955138.png" alt="image-20240103173955138" style="zoom:80%;" />
+
+修改脚本：`Assets/Scripts/PlayerController`
+
+```c#
+void Jump() {
+    if (Input.GetButtonDown("Jump")) {
+        // 在地面上, 进行一段跳
+        if (IsGrounded()) {
+            // 通过刚体组件, 控制角色跳跃
+            Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
+            rigidbody.velocity = Vector2.up * jumpVelocity;
+
+            // 可以进行二段跳
+            canDoubleJump = true;
+        
+            // 控制动画的切换
+            animator.SetBool("Jump", true);
+            animator.SetBool("Fall", false);
+        } 
+        // 在空中, 但可以进行二段跳
+        else if (canDoubleJump) {
+            Vector2 doubleJumpVelocity = new Vector2(0.0f, doubleJumpSpeed);
+            rigidbody.velocity = Vector2.up * doubleJumpVelocity;
+
+            // 不可以进行二段跳
+            canDoubleJump = false;
+
+            // 控制动画的切换
+            animator.SetBool("Jump", true);
+            animator.SetBool("Fall", false);
+        }
+    }
+
+    // 纵向速度小于0, 表示角色正在下落
+    if(rigidbody.velocity.y < 0.0f) {
+        animator.SetBool("Jump", false);
+        animator.SetBool("Fall", true);
+    }
+
+    // 角色落地后, 重置动画
+    if(IsGrounded()) {
+        animator.SetBool("Fall", false);
+    }
+}
+```
+
