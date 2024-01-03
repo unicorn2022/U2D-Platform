@@ -17,8 +17,6 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D feetCollider;
 
     private bool canDoubleJump = false; // 角色是否可以二段跳
-    private bool canAttack = true; // 角色是否可以攻击
-
 
     void Start()
     {
@@ -31,7 +29,6 @@ public class PlayerController : MonoBehaviour
     {
         Run();
         Jump();
-        Attack();
     }
 
     /// <summary>
@@ -113,21 +110,5 @@ public class PlayerController : MonoBehaviour
         return feetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
 
-    /// <summary>
-    /// 角色攻击, 及其动画的切换
-    /// </summary>
-    void Attack() {
-        // 由于控制了最短攻击间隔为0.5s, 因此可以长按攻击键持续攻击
-        if(Input.GetButton("Attack") && canAttack) {
-            animator.SetTrigger("Attack");
-            canAttack = false;
-            Invoke("AttackReset", 0.5f);
-        }
-    }
-    /// <summary>
-    /// 角色攻击后, 等待动画播放完成(0.5s), 重置攻击状态
-    /// </summary>
-    void AttackReset() {
-        canAttack = true;
-    }
+    
 }

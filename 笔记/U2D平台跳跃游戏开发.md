@@ -28,6 +28,8 @@
 
 <img src="AssetMarkdown/Ground.png" alt="Ground" style="zoom:80%;" />
 
+设置角色的`Tag`为：Player
+
 为角色添加组件
 
 - `Rigidbody 2D`：刚体组件，用于角色移动
@@ -43,6 +45,7 @@
 
 - `Box Collider 2D`：碰撞体组件，用于表示角色脚的碰撞
   - **是触发器**：勾选
+- `PlayerController`：自定义脚本，控制角色移动
 
 为地面添加组件
 
@@ -201,7 +204,7 @@ void Jump() {
 }
 ```
 
-# 07、角色攻击动画
+# 07、角色攻击：动画
 
 添加按键：`编辑|项目设置|输入管理器`
 
@@ -237,5 +240,59 @@ void AttackReset() {
 }
 ```
 
+# 08、角色攻击：HitBox
 
+为角色添加子对象：`PlayerAttack`
+
+为`PlayerAttack`添加组件：
+
+- `Polygon Collider 2D`，用于表示角色的攻击范围
+  - **是触发器**：勾选
+  - **默认不显示**
+- `PlayerAttack`：自定义脚本，控制角色攻击
+
+添加脚本：`Assets/Scripts/PlayerAttack`，控制角色攻击
+
+> 将上一节中的攻击相关函数，迁移到子物体中
+
+```c#
+public class PlayerAttack : MonoBehaviour {
+    [Tooltip("角色攻击的伤害")]
+    public int damage = 1;
+
+    private Animator animator;
+    private PolygonCollider2D collider;
+
+    private bool canAttack = true; // 角色是否可以攻击
+
+    void Start() {
+        animator = transform.parent.GetComponent<Animator>();
+        collider = GetComponent<PolygonCollider2D>();
+    }
+
+    void Update() {
+        Attack();
+    }
+    
+    void Attack() {
+        // 由于控制了最短攻击间隔为0.5s, 因此可以长按攻击键持续攻击
+        if (Input.GetButton("Attack") && canAttack) {
+            animator.SetTrigger("Attack");
+            canAttack = false;
+            Invoke("AttackStart", 0.35f);
+            Invoke("AttackReset", 0.5f);
+        }
+    }
+    void AttackStart() {
+        collider.enabled = true;
+        Invoke("AttackEnd", 0.05f);
+    }
+    void AttackEnd() {
+        collider.enabled = false;
+    }
+    void AttackReset() {
+        canAttack = true;
+    }
+}
+```
 
