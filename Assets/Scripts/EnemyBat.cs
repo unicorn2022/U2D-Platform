@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class EnemyBat : Enemy
 {
+    
     protected void Start()
     {
-        
+        base.Start();
     }
 
     protected void Update()

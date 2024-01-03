@@ -351,6 +351,9 @@ public class Enemy : MonoBehaviour {
 
 ```c#
 public class EnemyBat : Enemy {
+    protected void Start(){
+        base.Start();
+    }
     protected void Update(){
         base.Update();
     }
@@ -364,6 +367,26 @@ private void OnTriggerEnter2D(Collider2D collision) {
     if(collision.gameObject.tag.Equals("Enemy")) {
         collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
     }
+}
+```
+
+# 10、敌人：受伤后红色闪烁
+
+原理：更改`Sprite Renderer`组件的`颜色`属性
+
+修改脚本：`Assets/Scripts/Enemy`
+
+```c#
+public void TakeDamage(int damage) {
+    health -= damage;
+
+    // 受伤后红色闪烁
+    spriteRenderer.color = Color.red;
+    Invoke("ResetColor", flashTime);
+}
+
+void ResetColor() {
+    spriteRenderer.color = originColor;
 }
 ```
 
