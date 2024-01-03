@@ -90,5 +90,22 @@ void Flip() {
 }
 ```
 
+# 04、角色跳跃
 
+设置地面的layer为：`Ground`
+
+修改脚本：`Assets/Scripts/PlayerController`
+
+```c#
+void Jump() {
+    if (Input.GetButtonDown("Jump") && IsGrounded()) {
+        Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
+        rigidbody.velocity = Vector2.up * jumpVelocity;
+    }
+}
+
+bool IsGrounded() {
+    return feetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
+}
+```
 
