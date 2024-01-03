@@ -53,3 +53,42 @@
 
 - 通过`Input.GetAxis("Horizontal")`，获取水平移动方向
 - 通过设置刚体组件的速度属性`rigidbody.velocity`，控制角色移动
+
+# 03、角色移动动画：Idle & Run
+
+修改角色的Animator：
+
+- Idle => Run：参数`Running`为`true`
+- Run => Idle：参数`Running`为`false`
+
+<img src="AssetMarkdown/image-20240103165109666.png" alt="image-20240103165109666" style="zoom:80%;" />
+
+修改脚本：`Assets/Scripts/PlayerController`，控制参数`Running`的变化，以及角色的朝向
+
+```c#
+void Run() {
+    // 通过刚体组件, 控制角色移动
+    float moveDir = Input.GetAxis("Horizontal"); // 水平方向的移动
+    Vector2 playerVelocity = new Vector2(moveDir * runSpeed, rigidbody.velocity.y);
+    rigidbody.velocity = playerVelocity;
+
+    // 控制动画的切换
+    bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
+    animator.SetBool("Running", playerHasXAxisSpeed);
+}
+
+void Flip() {
+    bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
+    if (playerHasXAxisSpeed) {
+        if(rigidbody.velocity.x > 0.1f) {
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+        if(rigidbody.velocity.x < -0.1f) {
+            transform.localRotation = Quaternion.Euler(0, 180, 0);
+        }
+    }
+}
+```
+
+
+

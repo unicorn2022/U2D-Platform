@@ -7,15 +7,18 @@ public class PlayerController : MonoBehaviour
     [Tooltip("水平方向的移动速度")]
     public float runSpeed = 5.0f;
     private Rigidbody2D rigidbody;
+    private Animator animator;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        Run();      
+        Run();
+        Flip();
     }
 
     /// <summary>
@@ -23,10 +26,27 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Run() {
         // 通过刚体组件, 控制角色移动
-        if (rigidbody != null) {
-            float moveDir = Input.GetAxis("Horizontal"); // 水平方向的移动
-            Vector2 playerVelocity = new Vector2(moveDir * runSpeed, rigidbody.velocity.y);
-            rigidbody.velocity = playerVelocity;
+        float moveDir = Input.GetAxis("Horizontal"); // 水平方向的移动
+        Vector2 playerVelocity = new Vector2(moveDir * runSpeed, rigidbody.velocity.y);
+        rigidbody.velocity = playerVelocity;
+
+        // 控制动画的切换
+        bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
+        animator.SetBool("Running", playerHasXAxisSpeed);
+    }
+
+    /// <summary>
+    /// 根据移动速度, 翻转角色
+    /// </summary>
+    void Flip() {
+        bool playerHasXAxisSpeed = Mathf.Abs(rigidbody.velocity.x) > Mathf.Epsilon;
+        if (playerHasXAxisSpeed) {
+            if(rigidbody.velocity.x > 0.1f) {
+                transform.localRotation = Quaternion.Euler(0, 0, 0);
+            }
+            if(rigidbody.velocity.x < -0.1f) {
+                transform.localRotation = Quaternion.Euler(0, 180, 0);
+            }
         }
     }
 }
