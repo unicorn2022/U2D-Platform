@@ -31,19 +31,19 @@ public class PlayerAttack : MonoBehaviour
         if (Input.GetButton("Attack") && canAttack) {
             animator.SetTrigger("Attack");
             canAttack = false;
-            Invoke("AttackStart", 0.35f);
+            Invoke("AttackStart", 0.3f);
             Invoke("AttackReset", 0.5f);
         }
     }
     /// <summary>
-    /// 角色攻击后, 待刀光出现(0.35s), 启动碰撞体
+    /// 角色攻击后, 待刀光出现(0.3s), 启动碰撞体
     /// </summary>
     void AttackStart() {
         collider.enabled = true;
-        Invoke("AttackEnd", 0.05f);
+        Invoke("AttackEnd", 0.1f);
     }
     /// <summary>
-    /// 角色攻击启动碰撞体, 一段时间后(0.05s), 关闭碰撞体
+    /// 角色攻击启动碰撞体, 一段时间后(0.1s), 关闭碰撞体
     /// </summary>
     void AttackEnd() {
         collider.enabled = false;

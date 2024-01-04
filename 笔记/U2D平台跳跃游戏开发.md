@@ -489,3 +489,29 @@ public void TakeDamage(int damage) {
 }
 ```
 
+# 13、相机跟随
+
+新建空对象：`CameraFollow`，将相机作为其子对象
+
+- 添加自定义脚本：`CameraFollow`，控制相机跟随
+
+新建脚本：`Assets/Scripts/CameraFollow`
+
+```c#
+public class CameraFollow : MonoBehaviour {
+    [Tooltip("相机跟随的目标")]
+    public Transform target;
+    [Tooltip("平滑值"), Range(0, 1)]
+    public float smoothing = 0.1f;
+
+    private void LateUpdate() {
+        if (target == null) return;
+
+        // 通过插值的方式, 让相机移动到目标位置
+        if (transform.position != target.position) {
+            transform.position = Vector3.Lerp(transform.position, target.position, smoothing);
+        }
+    } 
+}
+```
+
