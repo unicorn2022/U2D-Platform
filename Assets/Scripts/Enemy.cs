@@ -62,7 +62,10 @@ public class Enemy : MonoBehaviour
         // 如果敌人与玩家碰撞, 并且玩家的碰撞器是胶囊体碰撞器
         if(collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
             if(playerHealth != null) {
+                // 玩家受到伤害
                 playerHealth.TakeDamage(damage);
+                // 敌人受到伤害
+                TakeDamage(damage);
             }
         }
     }

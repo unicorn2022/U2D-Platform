@@ -723,3 +723,30 @@ void KillPlayer() {
 - Sorting Layer 排序图层：处理**显示**顺序
 
 图层碰撞矩阵：**编辑|项目设置|2D 物理**
+
+# 19、2D Tile Map
+
+原始瓦片资源：`Assets/Sprite/WallTile0~2.png`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+创建**平铺调色板**，重命名为`MyPalette`
+
+- 将上述三个瓦片资源的Sprite，拖入平铺调色板中
+
+<img src="AssetMarkdown/image-20240104210846177.png" alt="image-20240104210846177" style="zoom:80%;" />
+
+创建**2D对象|瓦片地图|矩形**
+
+- `Grid`的子对象，即为`TileMap`
+- 再创建一个`TileMap`，分别对应`ForeGround`和`BackGround`
+  - 设置各自的图层、排序图层
+  - 在调色板中选中瓦片，即可绘制
+- 为`ForeGround`添加组件
+  - `Tilemap Collider 2D`：添加碰撞功能
+    - **由复合使用**：勾选
+  - `Composite Collider 2D`：将碰撞体合并到一起
+  - `Rigid Body 2D`：添加Composite Collider 2D时默认添加
+    - **身体类型**：静态
