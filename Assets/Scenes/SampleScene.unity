@@ -382,7 +382,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 599916758}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   - component: {fileID: 1269591532}
   - component: {fileID: 1269591535}
   - component: {fileID: 1269591536}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -537,8 +537,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2056598699
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 1044355275, guid: 40ea69e00a843b04d97850a218702857, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -560,7 +560,7 @@ Transform:
   m_GameObject: {fileID: 1269591528}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.979, z: 0}
+  m_LocalPosition: {x: 0.18, y: -2.88, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -945,8 +945,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1651777745}
-  m_Layer: 0
-  m_Name: Background
+  m_Layer: 6
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -966,8 +966,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2090753881}
-  - {fileID: 145735278}
   - {fileID: 1510928757}
+  - {fileID: 145735278}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1867961697 stripped
@@ -986,7 +986,7 @@ GameObject:
   - component: {fileID: 1938523272}
   - component: {fileID: 1938523274}
   - component: {fileID: 1938523273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1090,7 +1090,7 @@ GameObject:
   - component: {fileID: 2090753880}
   - component: {fileID: 2090753882}
   m_Layer: 6
-  m_Name: Ground
+  m_Name: Ground (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1218,11 +1218,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5111225788358380452, guid: c04a84253cfd69d4abdc1519aef0cd3b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.1
+      value: 4.02
       objectReference: {fileID: 0}
     - target: {fileID: 5111225788358380452, guid: c04a84253cfd69d4abdc1519aef0cd3b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.38
+      value: -2.89
       objectReference: {fileID: 0}
     - target: {fileID: 5111225788358380452, guid: c04a84253cfd69d4abdc1519aef0cd3b, type: 3}
       propertyPath: m_LocalPosition.z

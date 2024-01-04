@@ -692,3 +692,34 @@ private void OnTriggerEnter2D(Collider2D collision) {
 - Any State => Death：触发器`Death`
 
 <img src="AssetMarkdown/image-20240104203716686.png" alt="image-20240104203716686" style="zoom:80%;" />
+
+修改脚本：`PlayerHealth`
+
+```c#
+private Animator playerAnimator;    // 玩家的 Animator 组件
+
+public void TakeDamage(int damage) {
+    health -= damage;
+
+    // 玩家死亡
+    if (health <= 0) {
+        playerAnimator.SetTrigger("Death");
+        Invoke("KillPlayer", 0.9f);
+        return;
+    }
+
+    // 受伤后闪烁
+    BlinkPlayer(numBlinks, seconds);
+}
+
+void KillPlayer() {
+    Destroy(gameObject);
+}
+```
+
+# 18、Layer 和 Sorting Layer
+
+- Layer 图层：处理**碰撞**相关
+- Sorting Layer 排序图层：处理**显示**顺序
+
+图层碰撞矩阵：**编辑|项目设置|2D 物理**

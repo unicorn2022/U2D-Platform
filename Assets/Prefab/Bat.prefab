@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6026327682728323024}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LeftDownPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6190633245135786025}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightUpPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 4666323143807440141}
   - component: {fileID: 4111702858266820470}
   - component: {fileID: 5764862821761709249}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemyBat
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -135,8 +135,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1043164663
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -490131321, guid: 6a4f8f82752f3f04e9de644759eb54e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -244,7 +244,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5111225788358380452}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
