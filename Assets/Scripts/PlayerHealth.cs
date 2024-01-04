@@ -12,10 +12,12 @@ public class PlayerHealth : MonoBehaviour
     public float seconds = 0.1f;
 
     private Renderer playerRenderer;    // 玩家的 Renderer 组件
+    private Animator playerAnimator;    // 玩家的 Animator 组件
     
     void Start()
     {
         playerRenderer = GetComponent<Renderer>();
+        playerAnimator = GetComponent<Animator>();
     }
 
     void Update()
@@ -30,8 +32,10 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage) {
         health -= damage;
 
+        // 玩家死亡
         if (health <= 0) {
-            Destroy(gameObject);
+            playerAnimator.SetTrigger("Death");
+            Invoke("KillPlayer", 0.9f);
             return;
         }
 
@@ -53,5 +57,12 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(seconds);
         }
         playerRenderer.enabled = true;
+    }
+
+    /// <summary>
+    /// 角色播放完死亡动画后(0.9s), 销毁角色
+    /// </summary>
+    void KillPlayer() {
+        Destroy(gameObject);
     }
 }

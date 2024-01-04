@@ -675,3 +675,20 @@ private void OnTriggerEnter2D(Collider2D collision) {
 }
 ```
 
+# 17、角色死亡
+
+## 17.1	fixed：角色跳跃至平台边缘后卡死
+
+新建**2D|Physical Material 2D**，重命名为`PlayerFriction`
+
+- 摩擦力设置为：`0`
+
+将角色胶囊碰撞体的材质，设置为`PlayerFriction`
+
+## 17.2	角色死亡效果
+
+修改角色动画状态机
+
+- Any State => Death：触发器`Death`
+
+<img src="AssetMarkdown/image-20240104203716686.png" alt="image-20240104203716686" style="zoom:80%;" />

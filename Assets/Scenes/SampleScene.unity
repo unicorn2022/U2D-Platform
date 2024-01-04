@@ -621,7 +621,7 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 1269591528}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: f765482a426f9944a95ae2213e2c5dcf, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1255,6 +1255,10 @@ PrefabInstance:
     - target: {fileID: 5111225788358380452, guid: c04a84253cfd69d4abdc1519aef0cd3b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5764862821761709249, guid: c04a84253cfd69d4abdc1519aef0cd3b, type: 3}
+      propertyPath: damage
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5764862821761709249, guid: c04a84253cfd69d4abdc1519aef0cd3b, type: 3}
       propertyPath: bloodEffect
