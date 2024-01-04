@@ -489,7 +489,7 @@ public void TakeDamage(int damage) {
 }
 ```
 
-# 13、相机跟随
+# 13、相机跟随 CameraFollow
 
 新建空对象：`CameraFollow`，将相机作为其子对象
 
@@ -512,6 +512,76 @@ public class CameraFollow : MonoBehaviour {
             transform.position = Vector3.Lerp(transform.position, target.position, smoothing);
         }
     } 
+}
+```
+
+# 14、相机震动 CameraShake
+
+新建空对象：`CameraShake`
+
+- 添加自定义脚本：`CameraShake`
+- 设置Tag为：`CameraShake`，便于后续查找
+
+新建动画器控制器：`Assets/Animation/MainCamera/MainCamera.controller`
+
+新建动画：`Assets/Animation/MainCamera/Idle`
+
+新建动画：`Assets/Animation/MainCamera/Shake`
+
+- 进入`动画`面板录制动画：相机左右移动
+
+修改`MainCamera.controller`的状态机
+
+- Idle => Shake：触发器`Shake`
+- Shake => Idle：退出时间0.5s，过渡时间0.25s
+
+<img src="AssetMarkdown/image-20240104115610956.png" alt="image-20240104115610956" style="zoom:80%;" />
+
+为`Camera`添加`Animator`组件
+
+- 控制器设置为：`MainCamera.controller`
+
+新建脚本：`Assets/Scripts/CameraShake`
+
+```c#
+public class CameraShake : MonoBehaviour {
+    [Tooltip("相机的动画组件")]
+    public Animator cameraAnimator;
+    
+    void Start() {
+        GameController.cameraShake = GameObject.FindGameObjectWithTag("CameraShake").GetComponent<CameraShake>();
+    }
+    
+    public void Shake() {
+        cameraAnimator.SetTrigger("Shake");
+    }
+}
+```
+
+新建脚本：`Assets/Scripts/GameController`，用于存放全局静态变量
+
+```c#
+public class GameController : MonoBehaviour {
+    [Tooltip("相机抖动组件")]
+    public static CameraShake cameraShake;
+}
+```
+
+修改脚本：`Assets/Scripts/Enemy`
+
+```c#
+public void TakeDamage(int damage) {
+    health -= damage;
+
+    // 受伤后红色闪烁
+    spriteRenderer.color = Color.red;
+    Invoke("ResetColor", flashTime);
+
+    // 受伤后, 生成粒子效果
+    Instantiate(bloodEffect, transform.position, Quaternion.identity);
+
+    // 受伤后, 相机抖动
+    GameController.cameraShake.Shake();
 }
 ```
 

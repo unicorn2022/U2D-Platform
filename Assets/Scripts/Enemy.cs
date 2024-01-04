@@ -40,6 +40,9 @@ public class Enemy : MonoBehaviour
 
         // 受伤后, 生成粒子效果
         Instantiate(bloodEffect, transform.position, Quaternion.identity);
+    
+        // 受伤后, 相机抖动
+        GameController.cameraShake.Shake();
     }
     /// <summary>
     /// 敌人受到伤害后, 闪烁一下, 闪烁结束后, 恢复原来的颜色
