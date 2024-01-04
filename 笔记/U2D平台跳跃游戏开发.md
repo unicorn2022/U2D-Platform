@@ -2,7 +2,7 @@
 
 # 01、导入序列帧动画
 
-原始动画资源：`Assets/Sprite/PlayerSheet.png`
+原始动画资源：`Assets/Sprite/Player/PlayerSheet.png`
 
 - **Sprite模式**：多个
 - **每单位像素数**：16
@@ -726,7 +726,7 @@ void KillPlayer() {
 
 # 19、2D Tile Map
 
-原始瓦片资源：`Assets/Sprite/WallTile0~2.png`
+原始瓦片资源：`Assets/Sprite/WallTile/WallTile0~2.png`
 
 - **每单位像素数**：16
 - **过滤模式**：点（无过滤器）
@@ -750,3 +750,82 @@ void KillPlayer() {
   - `Composite Collider 2D`：将碰撞体合并到一起
   - `Rigid Body 2D`：添加Composite Collider 2D时默认添加
     - **身体类型**：静态
+
+# 20、UI：角色血量条
+
+原始血条资源：`Assets/Sprite/Player/HP_MP_Bar.png`
+
+- **Sprite模式**：多个
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割动画：
+
+- 自动切割
+
+新建**UI|画布**，在其下新建
+
+- **UI|图像**，重命名为`HealthBar`
+  - **源图像**：`HP_MP_Bar_0`
+  - 添加自定义脚本：`UIHealthBar`
+- **UI|图像**，重命名为`Health`
+  - **源图像**：`HP_MP_Bar_1`
+  - **图像类型**：已填充
+  - **填充方法**：水平
+  - **填充原点**：左
+- **UI|文本**，重命名为`HealthText`
+
+新建脚本：`UIHealthBar`
+
+```c#
+public class UIHealthBar : MonoBehaviour {
+    [Tooltip("生命值文本UI组件")]
+    public Text healthText;
+    [Tooltip("血量条UI组件")]
+    public Image healthBar;
+
+    [Tooltip("角色当前血量")]
+    public static int HealthCurrent;
+    [Tooltip("角色最大血量")]
+    public static int HealthMax;
+
+    void Update() {
+        healthBar.fillAmount = (float)HealthCurrent / HealthMax;
+        healthText.text = HealthCurrent.ToString() + "/" + HealthMax.ToString();
+    }
+}
+```
+
+修改脚本：`PlayerHealth`
+
+```c#
+void Start() {
+    playerRenderer = GetComponent<Renderer>();
+    playerAnimator = GetComponent<Animator>();
+
+    // 初始化血量条
+    UIHealthBar.HealthMax = health;
+    UIHealthBar.HealthCurrent = health;
+}
+
+public void TakeDamage(int damage) {
+    // 更新血量
+    health -= damage;
+    if (health <= 0) health = 0;
+    
+    // 更新血量条
+    UIHealthBar.HealthCurrent = health;
+
+    // 玩家死亡
+    if (health <= 0) {
+        playerAnimator.SetTrigger("Death");
+        Invoke("KillPlayer", 0.9f);
+        return;
+    }
+
+    // 受伤后闪烁
+    BlinkPlayer(numBlinks, seconds);
+}
+```
+

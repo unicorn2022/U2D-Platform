@@ -18,6 +18,10 @@ public class PlayerHealth : MonoBehaviour
     {
         playerRenderer = GetComponent<Renderer>();
         playerAnimator = GetComponent<Animator>();
+
+        // 初始化血量条
+        UIHealthBar.HealthMax = health;
+        UIHealthBar.HealthCurrent = health;
     }
 
     void Update()
@@ -30,7 +34,12 @@ public class PlayerHealth : MonoBehaviour
     /// </summary>
     /// <param name="damage">伤害值</param>
     public void TakeDamage(int damage) {
+        // 更新血量
         health -= damage;
+        if (health <= 0) health = 0;
+        
+        // 更新血量条
+        UIHealthBar.HealthCurrent = health;
 
         // 玩家死亡
         if (health <= 0) {
