@@ -614,3 +614,64 @@ public void SetCameraPositionLimit(Vector2 minPos, Vector2 maxPos) {
 }
 ```
 
+# 16、角色受伤闪烁
+
+为`Player`添加自定义脚本：`PlayerHealth`
+
+新建脚本：`Assets/Scripts/PlayerHealth`，用于控制角色血量
+
+```c#
+public class PlayerHealth : MonoBehaviour {
+    [Tooltip("玩家的生命值")]
+    public int health = 5;
+    [Tooltip("玩家受到伤害后闪烁的次数")]
+    public int numBlinks = 2;
+    [Tooltip("玩家受到伤害后闪烁的时间")]
+    public float seconds = 0.1f;
+
+    private Renderer playerRenderer;    // 玩家的 Renderer 组件
+    
+    void Start() {
+        playerRenderer = GetComponent<Renderer>();
+    }
+    
+    public void TakeDamage(int damage) {
+        health -= damage;
+
+        if (health <= 0) {
+            Destroy(gameObject);
+            return;
+        }
+
+        // 受伤后闪烁
+        BlinkPlayer(numBlinks, seconds);
+    }
+
+    void BlinkPlayer(int numBlinks, float seconds) {
+        StartCoroutine(DoBlinks(numBlinks, seconds));
+    }
+    IEnumerator DoBlinks(int numBlinks, float seconds) {
+        for(int i = 0; i < numBlinks * 2; i++) {
+            playerRenderer.enabled = !playerRenderer.enabled;
+            yield return new WaitForSeconds(seconds);
+        }
+        playerRenderer.enabled = true;
+    }
+}
+```
+
+修改脚本：`Assets/Scripts/Enemy`
+
+```c#
+private PlayerHealth playerHealth;      // 玩家的生命值组件
+
+private void OnTriggerEnter2D(Collider2D collision) {
+    // 如果敌人与玩家碰撞, 并且玩家的碰撞器是胶囊体碰撞器
+    if(collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+        if(playerHealth != null) {
+            playerHealth.TakeDamage(damage);
+        }
+    }
+}
+```
+

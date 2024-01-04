@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,12 +14,14 @@ public class Enemy : MonoBehaviour
     [Tooltip("敌人受伤后的粒子效果")]
     public GameObject bloodEffect;
 
-    private SpriteRenderer spriteRenderer;
-    private Color originColor;
+    private SpriteRenderer spriteRenderer;  // 敌人的 SpriteRenderer 组件
+    private Color originColor;              // 敌人原来的颜色
+    private PlayerHealth playerHealth;      // 玩家的生命值组件
 
     protected void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         originColor = spriteRenderer.color;
+        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>();
     }
 
     protected void Update() {
@@ -49,5 +52,18 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void ResetColor() {
         spriteRenderer.color = originColor;
+    }
+
+    /// <summary>
+    /// 敌人与玩家碰撞
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerEnter2D(Collider2D collision) {
+        // 如果敌人与玩家碰撞, 并且玩家的碰撞器是胶囊体碰撞器
+        if(collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            if(playerHealth != null) {
+                playerHealth.TakeDamage(damage);
+            }
+        }
     }
 }
