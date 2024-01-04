@@ -585,3 +585,32 @@ public void TakeDamage(int damage) {
 }
 ```
 
+# 15、相机限制移动范围
+
+修改脚本：`Assets/Scripts/CameraFollow`
+
+```c#
+[Tooltip("相机的最小位置")]
+public Vector2 minPosition;
+[Tooltip("相机的最大位置")]
+public Vector2 maxPosition;
+
+private void LateUpdate() {
+    if (target == null) return;
+
+    if (transform.position != target.position) {
+        Vector3 targetPosition = target.position;
+        // 限定相机的移动范围
+        targetPosition.x = Mathf.Clamp(targetPosition.x, minPosition.x, maxPosition.x);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, minPosition.y, maxPosition.y);
+        // 通过插值的方式, 让相机移动到目标位置
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothing);
+    }
+}
+
+public void SetCameraPositionLimit(Vector2 minPos, Vector2 maxPos) {
+    minPosition = minPos;
+    maxPosition = maxPos;
+}
+```
+
