@@ -20,7 +20,7 @@
 - 选择第1帧，拖入场景，生成原始人物`Player`
 - 选择动画对应的多个序列帧，拖拽至人物身上，自动创建动画
 
-# 02、2D角色移动
+# 02、角色：2D移动
 
 地面素材：`Assets/Sprite/Ground.png`
 
@@ -58,7 +58,7 @@
 - 通过`Input.GetAxis("Horizontal")`，获取水平移动方向
 - 通过设置刚体组件的速度属性`rigidbody.velocity`，控制角色移动
 
-# 03、角色移动动画：Idle & Run
+# 03、角色：移动动画：Idle & Run
 
 修改角色的Animator：
 
@@ -93,7 +93,7 @@ void Run() {
 }
 ```
 
-# 04、角色跳跃
+# 04、角色：跳跃
 
 设置地面的layer为：`Ground`
 
@@ -112,7 +112,7 @@ bool IsGrounded() {
 }
 ```
 
-# 05、角色跳跃动画：Jump & Fall & Idle & Run
+# 05、角色：跳跃动画
 
 修改角色的Animator：
 
@@ -150,7 +150,7 @@ void Jump() {
 }
 ```
 
-# 06、角色二段跳
+# 06、角色：二段跳
 
 修改角色的Animator：
 
@@ -489,7 +489,7 @@ public void TakeDamage(int damage) {
 }
 ```
 
-# 13、相机跟随 CameraFollow
+# 13、相机：跟随 CameraFollow
 
 新建空对象：`CameraFollow`，将相机作为其子对象
 
@@ -515,7 +515,7 @@ public class CameraFollow : MonoBehaviour {
 }
 ```
 
-# 14、相机震动 CameraShake
+# 14、相机：震动 CameraShake
 
 新建空对象：`CameraShake`
 
@@ -585,7 +585,7 @@ public void TakeDamage(int damage) {
 }
 ```
 
-# 15、相机限制移动范围
+# 15、相机：限制移动范围
 
 修改脚本：`Assets/Scripts/CameraFollow`
 
@@ -614,7 +614,7 @@ public void SetCameraPositionLimit(Vector2 minPos, Vector2 maxPos) {
 }
 ```
 
-# 16、角色受伤闪烁
+# 16、角色：受伤闪烁
 
 为`Player`添加自定义脚本：`PlayerHealth`
 
@@ -675,9 +675,9 @@ private void OnTriggerEnter2D(Collider2D collision) {
 }
 ```
 
-# 17、角色死亡
+# 17、角色：死亡
 
-## 17.1	fixed：角色跳跃至平台边缘后卡死
+## 17.1	[BUG]角色跳跃至平台边缘后卡死
 
 新建**2D|Physical Material 2D**，重命名为`PlayerFriction`
 
@@ -685,7 +685,7 @@ private void OnTriggerEnter2D(Collider2D collision) {
 
 将角色胶囊碰撞体的材质，设置为`PlayerFriction`
 
-## 17.2	角色死亡效果
+## 17.2	角色死亡
 
 修改角色动画状态机
 
@@ -717,14 +717,14 @@ void KillPlayer() {
 }
 ```
 
-# 18、Layer 和 Sorting Layer
+# 18、地图：Layer 和 Sorting Layer
 
 - Layer 图层：处理**碰撞**相关
 - Sorting Layer 排序图层：处理**显示**顺序
 
 图层碰撞矩阵：**编辑|项目设置|2D 物理**
 
-# 19、2D Tile Map
+# 19、地图：2D Tile Map
 
 原始瓦片资源：`Assets/Sprite/WallTile/WallTile0~2.png`
 
@@ -826,6 +826,124 @@ public void TakeDamage(int damage) {
 
     // 受伤后闪烁
     BlinkPlayer(numBlinks, seconds);
+}
+```
+
+# 21、UI：角色受伤屏幕红闪
+
+## 21.1	屏幕红闪
+
+新建**UI|图像**，重命名为`ScreenFlash`
+
+- **颜色**： FF0000，透明度设置为0
+- **锚点**：设置为四周，并将位置均设置为0
+
+<img src="AssetMarkdown/image-20240106210212215.png" alt="image-20240106210212215" style="zoom:80%;" />
+
+新建脚本`UIScreenFlash`，挂载到`Player`上
+
+```c#
+public class UIScreenFlash : MonoBehaviour {
+    [Tooltip("屏幕红闪对应的Image组件")]  
+    public Image image;
+    [Tooltip("屏幕红闪的持续时间")]
+    public float flashTime = 0.1f;
+
+    private Color flashColor;   // 红闪的颜色
+    private Color defaultColor; // 默认的颜色
+
+    void Start() {
+        defaultColor = image.color;
+        flashColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    
+    public void FlashScreen() {
+        StartCoroutine(Flash());
+    }
+    IEnumerator Flash() {
+        image.color = flashColor;
+        yield return new WaitForSeconds(flashTime);
+        image.color = defaultColor;
+    }
+}
+```
+
+修改脚本：`PlayerHealth`
+
+```c#
+public void TakeDamage(int damage) {
+    // 更新血量
+    health -= damage;
+    if (health <= 0) health = 0;
+    
+    // 更新血量条
+    UIHealthBar.HealthCurrent = health;
+
+    // 玩家死亡
+    if (health <= 0) {
+        playerAnimator.SetTrigger("Death");
+        Invoke("KillPlayer", 0.9f);
+        return;
+    }
+
+    // 受伤后闪烁
+    BlinkPlayer(numBlinks, seconds);
+    // 屏幕红闪
+    uiScreenFlash.FlashScreen();
+}
+```
+
+## 21.1	[BUG]角色死亡后仍能移动
+
+修改脚本：`GameController`
+
+```c#
+public class GameController : MonoBehaviour {
+    [Tooltip("相机抖动组件")]
+    public static CameraShake cameraShake;
+    [Tooltip("玩家是否存活")]
+    public static bool isPlayerAlive = true;
+}
+```
+
+修改脚本：`PlayerController`
+
+```c#
+void Update() {
+    if (!GameController.isPlayerAlive) return;
+    Run();
+    Jump();
+}
+```
+
+修改脚本：`PlayerHealth`
+
+```c#
+public void TakeDamage(int damage) {
+    // 更新血量
+    health -= damage;
+    if (health <= 0) health = 0;
+    
+    // 更新血量条
+    UIHealthBar.HealthCurrent = health;
+
+    // 玩家死亡
+    if (health <= 0) {
+        playerAnimator.SetTrigger("Death");
+        GameController.isPlayerAlive = false;
+        // 玩家死亡后, 不能移动, 不能受重力影响
+        rigidbody.velocity = Vector2.zero;
+        rigidbody.gravityScale = 0;
+        // 玩家死亡后, 0.9s 后销毁角色
+        Invoke("KillPlayer", 0.9f);
+        return;
+    }
+
+    // 受伤后闪烁
+    BlinkPlayer(numBlinks, seconds);
+    // 屏幕红闪
+    uiScreenFlash.FlashScreen();
 }
 ```
 
