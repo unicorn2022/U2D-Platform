@@ -717,14 +717,14 @@ void KillPlayer() {
 }
 ```
 
-# 18、地图：Layer 和 Sorting Layer
+# 18、Layer 和 Sorting Layer
 
 - Layer 图层：处理**碰撞**相关
 - Sorting Layer 排序图层：处理**显示**顺序
 
 图层碰撞矩阵：**编辑|项目设置|2D 物理**
 
-# 19、地图：2D Tile Map
+# 19、场景：2D Tile Map
 
 原始瓦片资源：`Assets/Sprite/WallTile/WallTile0~2.png`
 
@@ -944,6 +944,103 @@ public void TakeDamage(int damage) {
     BlinkPlayer(numBlinks, seconds);
     // 屏幕红闪
     uiScreenFlash.FlashScreen();
+}
+```
+
+# 22、场景：地刺陷阱
+
+地刺素材：`Assets/Sprite/ForeGround/Spike`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+- 进入**Sprite编辑器**，修改**Custom Physics Shape**，将碰撞体画在地刺上
+
+将素材拖入平铺调色板中，创建`tilemap`
+
+创建**2D对象|瓦片地图|矩形**
+
+- **排序图层**：ForeGround
+- **图层**：Spike
+- 添加组件：
+  - `Tilemap Collider 2D`：添加碰撞功能
+    - **由复合使用**：勾选
+  - `Composite Collider 2D`：将碰撞体合并到一起
+    - **是触发器**：勾选
+  - `Rigid Body 2D`：添加Composite Collider 2D时默认添加
+    - **身体类型**：静态
+  - `Spike`：自定义脚本
+
+新建脚本：`Spike`
+
+```c#
+public class Spike : MonoBehaviour {
+    [Tooltip("尖刺的伤害")]
+    public int damage = 1;
+
+    private PlayerHealth playerHealth;  // 玩家的生命值组件
+
+    void Start() {
+        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.PolygonCollider2D") {
+            if (playerHealth != null) {
+                // 玩家受到伤害
+                playerHealth.TakeDamage(damage);
+            }
+        }
+    }
+}
+```
+
+为`Player`添加一个`Polygon Collider 2D`：用于对角色造成伤害
+
+修改脚本：`PlayerHealth`
+
+```c#
+public void TakeDamage(int damage) {
+    // 更新血量
+    health -= damage;
+    // 禁用碰撞体, 实现短暂无敌效果
+    polygonCollider2D.enabled = false;
+    if (health <= 0) health = 0;
+    
+    // 更新血量条
+    UIHealthBar.HealthCurrent = health;
+
+    // 玩家死亡
+    if (health <= 0) {
+        playerAnimator.SetTrigger("Death");
+        GameController.isPlayerAlive = false;
+        // 玩家死亡后, 不能移动, 不能受重力影响
+        rigidbody.velocity = Vector2.zero;
+        rigidbody.gravityScale = 0;
+        // 玩家死亡后, 0.9s 后销毁角色
+        Invoke("KillPlayer", 0.9f);
+        return;
+    }
+
+    // 受伤后闪烁
+    BlinkPlayer(numBlinks, seconds);
+    // 屏幕红闪
+    uiScreenFlash.FlashScreen();
+}
+
+void BlinkPlayer(int numBlinks, float seconds) {
+    StartCoroutine(DoBlinks(numBlinks, seconds));
+}
+IEnumerator DoBlinks(int numBlinks, float seconds) {
+    for(int i = 0; i < numBlinks * 2; i++) {
+        playerRenderer.enabled = !playerRenderer.enabled;
+        yield return new WaitForSeconds(seconds);
+    }
+    playerRenderer.enabled = true;
+
+    // 闪烁结束后一段时间, 恢复碰撞体
+    yield return new WaitForSeconds(0.5f);
+    polygonCollider2D.enabled = true;
 }
 ```
 

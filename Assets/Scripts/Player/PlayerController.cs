@@ -107,7 +107,8 @@ public class PlayerController : MonoBehaviour
     /// true表示在地面上, false表示不在地面上
     /// </returns>
     bool IsGrounded() {
-        return feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"));
+        return feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"))
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("Spike"));
     }
 
     

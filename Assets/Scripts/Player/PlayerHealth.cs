@@ -7,7 +7,7 @@ public class PlayerHealth : MonoBehaviour
     [Tooltip("玩家的生命值")]
     public int health = 5;
     [Tooltip("玩家受到伤害后闪烁的次数")]
-    public int numBlinks = 2;
+    public int numBlinks = 5;
     [Tooltip("玩家受到伤害后闪烁的时间")]
     public float seconds = 0.1f;
 
@@ -15,12 +15,14 @@ public class PlayerHealth : MonoBehaviour
     private Animator playerAnimator;        // 玩家的 Animator 组件
     private UIScreenFlash uiScreenFlash;    // 屏幕红闪组件
     private Rigidbody2D rigidbody;          // 玩家的刚体组件
+    private PolygonCollider2D polygonCollider2D;  // 玩家的 PolygonCollider2D 组件
     
     void Start() {
         playerRenderer = GetComponent<Renderer>();
         playerAnimator = GetComponent<Animator>();
         uiScreenFlash = GetComponent<UIScreenFlash>();
         rigidbody = GetComponent<Rigidbody2D>();
+        polygonCollider2D = GetComponent<PolygonCollider2D>();
 
         // 初始化血量条
         UIHealthBar.HealthMax = health;
@@ -34,6 +36,8 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage) {
         // 更新血量
         health -= damage;
+        // 禁用碰撞体, 实现短暂无敌效果
+        polygonCollider2D.enabled = false;
         if (health <= 0) health = 0;
         
         // 更新血量条
@@ -71,6 +75,10 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(seconds);
         }
         playerRenderer.enabled = true;
+
+        // 闪烁结束后一段时间, 恢复碰撞体
+        yield return new WaitForSeconds(0.5f);
+        polygonCollider2D.enabled = true;
     }
 
     /// <summary>
