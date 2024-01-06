@@ -1044,3 +1044,64 @@ IEnumerator DoBlinks(int numBlinks, float seconds) {
 }
 ```
 
+# 23、场景：移动平台
+
+移动平台素材：`Assets/Sprite/ForeGround/MovingPlatform`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+添加到场景中，重命名为`MovingPlatform`
+
+- 添加组件：`Box Collider 2D`
+- 添加自定义脚本：`MovingPlatform`
+
+添加脚本：`MovingPlatform`
+
+```c#
+public class MovingPlatform : MonoBehaviour {
+    [Tooltip("平台移动的速度")]
+    public float speed = 2f;
+    [Tooltip("平台到达目标点后移动的时间")]
+    public float waitTime = 0.5f;
+    [Tooltip("平台移动的目标点")]
+    public Transform[] movePositions;
+
+    private int i;
+    private float hasWaited;
+    private Transform playerDefaultParent;
+
+    void Start() {
+        i = 0;
+        hasWaited = 0f;
+    }
+
+    void Update() {
+        if(Vector2.Distance(transform.position, movePositions[i].position) < 0.1f) {
+            hasWaited += Time.deltaTime;
+            if(hasWaited >= waitTime) {
+                hasWaited = 0f;
+                i++;
+                if(i >= movePositions.Length)  i = 0;
+            }
+        } else {
+            transform.position = Vector2.MoveTowards(transform.position, movePositions[i].position, speed * Time.deltaTime);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if(collision.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.BoxCollider2D") {
+            playerDefaultParent = collision.transform.parent;
+            collision.transform.SetParent(transform);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if(collision.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.BoxCollider2D") {
+            collision.transform.SetParent(playerDefaultParent);
+        }
+    }
+}
+```
+
