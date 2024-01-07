@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public float jumpSpeed = 8.0f;
     [Tooltip("角色二段跳跃的速度")]
     public float doubleJumpSpeed = 5.0f;
+    [Tooltip("角色爬梯子的速度")]
+    public float climbSpeed = 4.0f;
 
 
     private Rigidbody2D rigidbody;
@@ -17,19 +20,48 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D feetCollider;
 
     private bool canDoubleJump = false; // 角色是否可以二段跳
+    private float playerGravity;        // 角色初始的重力系数
 
-    void Start()
-    {
+    public bool isGrounded = false;        // 角色是否在地面上
+    public bool isOneWayPlatform = false;  // 角色是否在单向移动平台上
+    public bool isLadder = false;          // 角色是否在梯子上
+
+    public bool isClimbing = false;        // 角色是否在爬梯子
+    public bool isJumping = false;         // 角色是否在跳跃
+    public bool isFalling = false;         // 角色是否在下落
+
+
+    void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         feetCollider = GetComponent<BoxCollider2D>();
+        playerGravity = rigidbody.gravityScale;
     }
 
     void Update() {
         if (!GameController.isPlayerAlive) return;
+        SetPlayerStateParam();
         Run();
         Jump();
-        OneWayPlatformCheck();
+        OneWayPlatform();
+        Climb();
+    }
+
+    /// <summary>
+    /// 设置角色的状态参数
+    /// </summary>
+    void SetPlayerStateParam() {
+        // 碰撞检测参数
+        isGrounded = feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"))
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("MovingPlatform"))
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+        isOneWayPlatform = feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+        isLadder = feetCollider.IsTouchingLayers(LayerMask.GetMask("Ladder"));
+
+        // 动画参数
+        isClimbing = animator.GetBool("Climb");
+        isJumping = animator.GetBool("Jump");
+        isFalling = animator.GetBool("Fall");
     }
 
     /// <summary>
@@ -61,9 +93,16 @@ public class PlayerController : MonoBehaviour
     /// 角色跳跃, 及其动画的切换
     /// </summary>
     void Jump() {
+        // TODO: 不能在梯子上起跳
+        if (isLadder && !isGrounded) {
+            animator.SetBool("Jump", false);
+            animator.SetBool("Fall", false);
+            return;
+        }
+
         if (Input.GetButtonDown("Jump")) {
             // 在地面上, 进行一段跳
-            if (IsGrounded()) {
+            if (isGrounded) {
                 // 通过刚体组件, 控制角色跳跃
                 Vector2 jumpVelocity = new Vector2(0.0f, jumpSpeed);
                 rigidbody.velocity = Vector2.up * jumpVelocity;
@@ -87,57 +126,71 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Jump", true);
                 animator.SetBool("Fall", false);
             }
+            return;
         }
 
         // 纵向速度小于0, 表示角色正在下落
-        if(rigidbody.velocity.y < 0.0f) {
+        if (rigidbody.velocity.y < 0.0f) {
             animator.SetBool("Jump", false);
             animator.SetBool("Fall", true);
         }
 
         // 角色落地后, 重置动画
-        if(IsGrounded()) {
+        if(isGrounded) {
             animator.SetBool("Fall", false);
         }
     }
 
     /// <summary>
-    /// 判断角色是否在地面上
-    /// </summary>
-    /// <returns>
-    /// true表示在地面上, false表示不在地面上
-    /// </returns>
-    bool IsGrounded() {
-        return feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"))
-            || feetCollider.IsTouchingLayers(LayerMask.GetMask("MovingPlatform"))
-            || feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
-    }
-
-    
-    /// <summary>
     /// 角色在单向移动平台上, 且按下向下键, 角色掉落
     /// </summary>
-    void OneWayPlatformCheck() {
-        if (IsGrounded()) gameObject.layer = LayerMask.NameToLayer("Player");
+    void OneWayPlatform() {
+        if (isGrounded) gameObject.layer = LayerMask.NameToLayer("Player");
 
-        if (IsOneWayPlatform() && Input.GetAxis("Vertical") < -0.1f) {
+        if (isOneWayPlatform && Input.GetAxis("Vertical") < -0.1f) {
             // 将角色的碰撞层短暂改为OneWayPlatform, 使角色可以穿过单向移动平台
             gameObject.layer = LayerMask.NameToLayer("OneWayPlatform");
-            // 0.5秒后, 将角色的碰撞层改回Player
-            Invoke("ResetPlayerLayer", 0.5f);
+            // 0.3秒后, 将角色的碰撞层改回Player
+            Invoke("ResetPlayerLayer", 0.3f);
         }
     }
-    /// <summary>
-    /// 判断角色是否在单向移动平台上
-    /// </summary>
-    /// <returns>
-    /// true表示在, false表示不在
-    /// </returns>
-    bool IsOneWayPlatform() {
-        return feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
-    }
-    
     void ResetPlayerLayer() {
         gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+
+    /// <summary>
+    /// 角色爬梯子, 及其动画的切换
+    /// </summary>
+    void Climb() {
+        // 角色在单向移动平台上, 不能爬梯子
+        if (isOneWayPlatform) return;
+
+        // 角色在梯子上
+        if (isLadder) {
+            // 角色不受重力影响
+            rigidbody.gravityScale = 0f;
+
+            float moveY = Input.GetAxis("Vertical");
+            // 角色在爬梯子
+            if(moveY > 0.5f || moveY < -0.5f) {
+                animator.SetBool("Climb", true);
+                rigidbody.velocity = new Vector2(rigidbody.velocity.x, moveY * climbSpeed);
+            } 
+            // 角色从梯子上跳跃
+            else if (isJumping || isFalling){
+                animator.SetBool("Climb", false);
+            } 
+            // 角色停在梯子上
+            else {
+                animator.SetBool("Climb", false);
+                rigidbody.velocity = new Vector2(rigidbody.velocity.x, 0.0f);
+            }
+        }
+        // 角色不在梯子上
+        else {
+            animator.SetBool("Climb", false);
+            rigidbody.gravityScale = playerGravity;
+        }
+
     }
 }

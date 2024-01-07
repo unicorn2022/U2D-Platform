@@ -20,7 +20,7 @@ TagManager:
   - Spike
   - MovingPlatform
   - OneWayPlatform
-  - 
+  - Ladder
   - 
   - 
   - 
@@ -48,6 +48,9 @@ TagManager:
     locked: 0
   - name: ForeGround
     uniqueID: 1219183907
+    locked: 0
+  - name: Ladder
+    uniqueID: 1097249429
     locked: 0
   - name: Enemy
     uniqueID: 1043164663

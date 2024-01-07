@@ -1161,3 +1161,100 @@ void ResetPlayerLayer() {
 }
 ```
 
+# 25、角色：爬梯子
+
+梯子素材：`Assets/Sprite/ForeGround/Ladder`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+- **Sprite Editor|Custom Physics Shapes**：将碰撞盒放中心区域
+
+将素材拖入平铺调色板中，创建`tilemap`
+
+创建**2D对象|瓦片地图|矩形**，重命名为`Ladder`
+
+- **排序图层**：Ladder
+- **图层**：Ladder
+  - **只与Player进行碰撞**
+- 添加组件：
+  - `Tilemap Collider 2D`：添加碰撞功能
+    - **由复合使用**：勾选
+  - `Composite Collider 2D`：将碰撞体合并到一起
+    - **是触发器**：勾选
+  - `Rigid Body 2D`：添加Composite Collider 2D时默认添加
+    - **身体类型**：静态
+
+修改`Player`的动画状态机
+
+- Idle => Climb：参数`Climb`为true
+- Run => Climb：参数`Climb`为true
+- Jump => Climb：参数`Climb`为true
+- Fall => Climb：参数`Climb`为true
+- Climb => Idle：参数`Climb`为false，参数`Idle`为true
+- Climb => Run：参数`Climb`为false，参数`Run`为true
+
+<img src="AssetMarkdown/image-20240107145748125.png" alt="image-20240107145748125" style="zoom:80%;" />
+
+修改脚本：`PlayerController`
+
+```c#
+void SetPlayerStateParam() {
+    // 碰撞检测参数
+    isGrounded = feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"))
+        || feetCollider.IsTouchingLayers(LayerMask.GetMask("MovingPlatform"))
+        || feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+    isOneWayPlatform = feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+    isLadder = feetCollider.IsTouchingLayers(LayerMask.GetMask("Ladder"));
+
+    // 动画参数
+    isClimbing = animator.GetBool("Climb");
+    isJumping = animator.GetBool("Jump");
+    isFalling = animator.GetBool("Fall");
+}
+
+void Jump() {
+    // TODO: 不能在梯子上起跳
+    if (isLadder && !isGrounded) {
+        animator.SetBool("Jump", false);
+        animator.SetBool("Fall", false);
+        return;
+    }
+	
+    ...
+}
+
+void Climb() {
+    // 角色在单向移动平台上, 不能爬梯子
+    if (isOneWayPlatform) return;
+
+    // 角色在梯子上
+    if (isLadder) {
+        // 角色不受重力影响
+        rigidbody.gravityScale = 0f;
+
+        float moveY = Input.GetAxis("Vertical");
+        // 角色在爬梯子
+        if(moveY > 0.5f || moveY < -0.5f) {
+            animator.SetBool("Climb", true);
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, moveY * climbSpeed);
+        } 
+        // 角色从梯子上跳跃
+        else if (isJumping || isFalling){
+            animator.SetBool("Climb", false);
+        } 
+        // 角色停在梯子上
+        else {
+            animator.SetBool("Climb", false);
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, 0.0f);
+        }
+    }
+    // 角色不在梯子上
+    else {
+        animator.SetBool("Climb", false);
+        rigidbody.gravityScale = playerGravity;
+    }
+}
+```
+
+# 26、角色：金币掉落及拾取
