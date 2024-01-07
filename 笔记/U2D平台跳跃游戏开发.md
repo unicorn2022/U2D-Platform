@@ -1457,8 +1457,5 @@ public class Sign : MonoBehaviour {
 将火把添加到场景中
 
 - **排序图层**：Item
-
-添加子对象：**灯光|聚光灯2D**
-
 - 添加组件：`Animator`
   - 创建动画控制器，并录制动画，赋值给Animator组件
