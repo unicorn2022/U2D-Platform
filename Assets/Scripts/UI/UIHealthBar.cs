@@ -18,6 +18,6 @@ public class UIHealthBar : MonoBehaviour
     void Update()
     {
         healthBar.fillAmount = (float)HealthCurrent / HealthMax;
-        healthText.text = HealthCurrent.ToString() + "/" + HealthMax.ToString();
+        healthText.text = HealthCurrent.ToString() + " / " + HealthMax.ToString();
     }
 }
