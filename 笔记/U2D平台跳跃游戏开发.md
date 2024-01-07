@@ -958,7 +958,7 @@ public void TakeDamage(int damage) {
 
 将素材拖入平铺调色板中，创建`tilemap`
 
-创建**2D对象|瓦片地图|矩形**
+创建**2D对象|瓦片地图|矩形**，重命名为`Spike`
 
 - **排序图层**：ForeGround
 - **图层**：Spike
@@ -1102,6 +1102,62 @@ public class MovingPlatform : MonoBehaviour {
             collision.transform.SetParent(playerDefaultParent);
         }
     }
+}
+```
+
+# 24、场景：单向跳跃平台
+
+单向跳跃素材：`Assets/Sprite/ForeGround/OneWayPlatform`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+- **Sprite Editor|Custom Physics Shapes**：将碰撞盒放在第一个色块上，增加容错率
+
+将素材拖入平铺调色板中，创建`tilemap`
+
+创建**2D对象|瓦片地图|矩形**，重命名为`OneWayPlatform`
+
+- **排序图层**：ForeGround
+- **图层**：OneWayPlatform
+  - **只与Player、Enemy进行碰撞**
+
+- 添加组件：
+  - `Tilemap Collider 2D`：添加碰撞功能
+    - **由复合使用**：勾选
+  - `Composite Collider 2D`：将碰撞体合并到一起
+    - **是触发器**：不勾选
+    - **由效果器使用**：勾选
+  - `Rigid Body 2D`：添加Composite Collider 2D时默认添加
+    - **身体类型**：静态
+  - `Platform Effector 2D`：平台效果器
+    - **碰撞器遮罩**：取消勾选OneWayPlatform
+
+> 按向下键能够离开平台：短暂将角色的碰撞层更改为`OneWayPlatform`，从而实现不碰撞
+>
+> - 不能禁用`Capsule Collider 2D`，防止无法与敌人碰撞
+> - 必须通过`Invoke`将碰撞层改回去，因为`OneWayPlatform`不会与`OneWayPlatform`碰撞，导致`IsGround()`判断出现问题
+
+修改脚本：`PlayerController`
+
+```c#
+void OneWayPlatformCheck() {
+    if (IsGrounded()) gameObject.layer = LayerMask.NameToLayer("Player");
+
+    if (IsOneWayPlatform() && Input.GetAxis("Vertical") < -0.1f) {
+        // 将角色的碰撞层短暂改为OneWayPlatform, 使角色可以穿过单向移动平台
+        gameObject.layer = LayerMask.NameToLayer("OneWayPlatform");
+        // 0.5秒后, 将角色的碰撞层改回Player
+        Invoke("ResetPlayerLayer", 0.5f);
+    }
+}
+
+bool IsOneWayPlatform() {
+    return feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+}
+
+void ResetPlayerLayer() {
+    gameObject.layer = LayerMask.NameToLayer("Player");
 }
 ```
 

@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
         if (!GameController.isPlayerAlive) return;
         Run();
         Jump();
+        OneWayPlatformCheck();
     }
 
     /// <summary>
@@ -108,8 +109,35 @@ public class PlayerController : MonoBehaviour
     /// </returns>
     bool IsGrounded() {
         return feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"))
-            || feetCollider.IsTouchingLayers(LayerMask.GetMask("MovingPlatform"));
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("MovingPlatform"))
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
     }
 
     
+    /// <summary>
+    /// 角色在单向移动平台上, 且按下向下键, 角色掉落
+    /// </summary>
+    void OneWayPlatformCheck() {
+        if (IsGrounded()) gameObject.layer = LayerMask.NameToLayer("Player");
+
+        if (IsOneWayPlatform() && Input.GetAxis("Vertical") < -0.1f) {
+            // 将角色的碰撞层短暂改为OneWayPlatform, 使角色可以穿过单向移动平台
+            gameObject.layer = LayerMask.NameToLayer("OneWayPlatform");
+            // 0.5秒后, 将角色的碰撞层改回Player
+            Invoke("ResetPlayerLayer", 0.5f);
+        }
+    }
+    /// <summary>
+    /// 判断角色是否在单向移动平台上
+    /// </summary>
+    /// <returns>
+    /// true表示在, false表示不在
+    /// </returns>
+    bool IsOneWayPlatform() {
+        return feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+    }
+    
+    void ResetPlayerLayer() {
+        gameObject.layer = LayerMask.NameToLayer("Player");
+    }
 }
