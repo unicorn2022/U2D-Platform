@@ -1258,3 +1258,96 @@ void Climb() {
 ```
 
 # 26、角色：金币掉落及拾取
+
+金币素材：`Assets/Sprite/Item/Coin`
+
+- **Sprite模式**：多个
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割动画：
+
+- 每个单元的尺寸：16×16像素
+
+生成动画：
+
+- 选择第1帧，拖入场景，生成原始金币`Coin`
+- 选择动画对应的多个序列帧，拖拽至`Coin`身上，自动创建动画
+
+## 26.1	UI：当前金币数
+
+新建**UI|图像**，重命名为`Coin`
+
+- **源图像**：`Coin_0`
+- 添加自定义脚本：`UICoin`
+
+**UI|文本**，重命名为`CoinText`，作为`Coin`的子对象
+
+新建脚本：`UICoin`
+
+```c#
+public class UICoin : MonoBehaviour {
+    [Tooltip("角色当前收集的金币数量")]
+    public static int coinNumber;
+    [Tooltip("金币的UI文本组件")]
+    public Text coinText;
+
+    void Start() {
+        coinNumber = 0;
+    }
+
+    void Update() {
+        coinText.text = coinNumber.ToString();
+    }
+}
+```
+
+## 26.2	角色：捡起金币
+
+将金币添加到场景中
+
+- **排序图层**：Item
+- **图层**：Item
+  - **只与ForeGround、MovingPlatform、OneWayPlatform进行碰撞**
+- 添加组件：
+  - `Box Collider 2D`
+  - `Rigidbody 2D`：
+    - **Constriants|冻结旋转**：冻结Z轴旋转（因为是2D游戏）
+
+为金币添加子对象，重命名为`TriggerBox`
+
+- **图层**：TriggerBox
+  - **只与Player进行碰撞**
+- 添加组件：
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`Coin`
+
+新建脚本：`Coin`
+
+```c#
+public class Coin : MonoBehaviour{
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            UICoin.coinNumber++;
+            Destroy(gameObject);
+        }
+    }
+}
+```
+
+## 26.3	敌人：掉落金币
+
+修改脚本：`Enemy`
+
+```c#
+protected void Update() {
+    if (health <= 0) {
+        Instantiate(dropCoin, transform.position, Quaternion.identity);
+        // 由于脚本挂载在敌人的子物体上, 所以销毁敌人的父物体
+        Destroy(transform.parent.gameObject);
+    }
+}
+```
+

@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
     public float flashTime = 0.2f;
     [Tooltip("敌人受伤后的粒子效果")]
     public GameObject bloodEffect;
+    [Tooltip("敌人死亡后掉落的金币")]
+    public GameObject dropCoin;
 
     private SpriteRenderer spriteRenderer;  // 敌人的 SpriteRenderer 组件
     private Color originColor;              // 敌人原来的颜色
@@ -26,7 +28,9 @@ public class Enemy : MonoBehaviour
 
     protected void Update() {
         if (health <= 0) {
-            Destroy(gameObject);
+            Instantiate(dropCoin, transform.position, Quaternion.identity);
+            // 由于脚本挂载在敌人的子物体上, 所以销毁敌人的父物体
+            Destroy(transform.parent.gameObject);
         }
     }
 
