@@ -1517,3 +1517,59 @@ public void TakeDamage(int damage) {
 }
 ```
 
+# 30、场景：游戏背景平滑切换
+
+背景素材：`Assets/Sprite/BackGround/selda1~2`
+
+创建物体，重命名为`BackGroundPicture`
+
+- **父对象**：CameraFollow，从而实现背景紧跟人物
+- 添加组件
+  - `Sprite Renderer`：渲染图像
+    - **排序图层**：BackGround
+    - **图层顺序**：1
+  - `Animator`：控制背景变化
+  - 自定义脚本：`BackGround`
+
+创建动画控制器，重命名为`BackGround`
+
+- 新建动画`ChangeBackGround`：更改透明度，注意要在透明度为0停留一段时间
+- Idle => ChangeBackGround：触发器`ChangeBackGround`
+
+<img src="AssetMarkdown/image-20240107220920845.png" alt="image-20240107220920845" style="zoom:80%;" />
+
+新建脚本：`BackGroundPicture`
+
+```c#
+public class BackGroundPicture : MonoBehaviour {
+    [Header("背景图片数组")]
+    public Sprite[] backGroundPictures;
+
+    private Animator animator;              // 动画控制器
+    private SpriteRenderer spriteRenderer;  // 背景图片渲染器
+
+    public int currentBackGround;  // 当前背景图片下标
+    private bool needChange;        // 是否需要切换背景图片
+
+    void Start() {
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        currentBackGround = 0;
+        needChange = false;
+    }
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.H)) {
+            animator.SetTrigger("ChangeBackGround");
+            needChange = true;
+        }
+
+        if(needChange && spriteRenderer.color.a == 0f) {
+            currentBackGround = (currentBackGround + 1) % backGroundPictures.Length;
+            spriteRenderer.sprite = backGroundPictures[currentBackGround];
+            needChange = false;
+        }
+    }
+}
+```
+
