@@ -1459,3 +1459,61 @@ public class Sign : MonoBehaviour {
 - **排序图层**：Item
 - 添加组件：`Animator`
   - 创建动画控制器，并录制动画，赋值给Animator组件
+
+# 29、敌人：受伤值浮动显示
+
+字体素材：`Assets/Sprite/Font/PixelFont_5x5`
+
+- **渲染模式**：平滑
+- **角色**：Unicode
+
+添加第三方库脚本：`MeshRendererSortingEditor.cs`
+
+创建空对象，重命名为`FloatPoint`，并设置为预制体
+
+- 添加组件：
+  - `Text Mesh`
+    - **字符大小**：0.4
+    - **字体**：PixelFont_5x5
+    - **字体大小**：14
+  - `Mesh Renderer`
+    - **Sorting Layer**：Enemy
+  - `Animator`
+  - 自定义脚本：`FloatPoint`
+
+新建动画控制器，重命名为`FloatPoint`，控制`FloatPoint`浮动
+
+新建脚本：`FloatPoint`
+
+```c#
+public class FloatPoint : MonoBehaviour {
+    [Tooltip("销毁时间")]
+    public float timeToDestroy = 0.6f;
+    void Start() {
+        Destroy(gameObject, timeToDestroy);
+    }
+}
+```
+
+修改脚本：`Enemy`
+
+```c#
+public void TakeDamage(int damage) {
+    health -= damage;
+
+    // 受伤后红色闪烁
+    spriteRenderer.color = Color.red;
+    Invoke("ResetColor", flashTime);
+
+    // 受伤后, 生成粒子效果
+    Instantiate(bloodEffect, transform.position, Quaternion.identity);
+    
+    // 受伤后, 生成浮动显示伤害值
+    GameObject floatpoint = Instantiate(floatPoint, transform.position, Quaternion.identity);
+    floatpoint.transform.GetChild(0).GetComponent<TextMesh>().text = damage.ToString();
+
+    // 受伤后, 相机抖动
+    GameController.cameraShake.Shake();
+}
+```
+

@@ -11,8 +11,11 @@ public class Enemy : MonoBehaviour
     public int damage = 1;
     [Tooltip("敌人受伤后闪烁的时间")]
     public float flashTime = 0.2f;
+
     [Tooltip("敌人受伤后的粒子效果")]
     public GameObject bloodEffect;
+    [Tooltip("敌人受伤后浮动显示伤害值")]
+    public GameObject floatPoint;
     [Tooltip("敌人死亡后掉落的金币")]
     public GameObject dropCoin;
 
@@ -47,7 +50,11 @@ public class Enemy : MonoBehaviour
 
         // 受伤后, 生成粒子效果
         Instantiate(bloodEffect, transform.position, Quaternion.identity);
-    
+        
+        // 受伤后, 生成浮动显示伤害值
+        GameObject floatpoint = Instantiate(floatPoint, transform.position, Quaternion.identity);
+        floatpoint.transform.GetChild(0).GetComponent<TextMesh>().text = damage.ToString();
+
         // 受伤后, 相机抖动
         GameController.cameraShake.Shake();
     }

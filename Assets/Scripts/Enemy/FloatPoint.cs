@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BloodEffect : MonoBehaviour
-{
+public class FloatPoint : MonoBehaviour {
     [Tooltip("销毁时间")]
-    public float timeToDestroy = 1f;
-    void Start()
-    {
+    public float timeToDestroy = 0.6f;
+    void Start() {
         Destroy(gameObject, timeToDestroy);
     }
 }

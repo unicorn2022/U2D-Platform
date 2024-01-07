@@ -231,6 +231,7 @@ MonoBehaviour:
   damage: 1
   flashTime: 0.2
   bloodEffect: {fileID: 7260548850510248351, guid: 780a109356f6d8a4fa5de2bfa44cf693, type: 3}
+  floatPoint: {fileID: 6742521118999055894, guid: 60338612b8916c44a97da6f75bfb1d36, type: 3}
   dropCoin: {fileID: 256184306539902338, guid: d8854ad24ec46544487492312ecba505, type: 3}
   speed: 2
   startWaitTime: 0.2
