@@ -1351,3 +1351,74 @@ protected void Update() {
 }
 ```
 
+# 27、场景：靠近提示牌显示文字对话框
+
+## 27.1	场景：提示牌
+
+提示牌素材：`Assets/Sprite/ForeGround/Sign`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将提示牌添加到场景中
+
+- **排序图层**：Item
+- **图层**：TriggerBox
+- 添加组件：
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`Sign`
+
+添加脚本：`Sign`
+
+```c#
+public class Sign : MonoBehaviour {
+    [Tooltip("对话框")]
+    public GameObject dialogBox;
+    [Tooltip("对话框的Text组件")]
+    public Text dialogBoxText;
+    [Tooltip("对话框中的显示的文字")]
+    public string dialogText;
+
+    private bool isPlayerInSign = false;    // 玩家是否进入了sign范围
+
+    void Update() {
+        if(Input.GetKeyDown(KeyCode.F) && isPlayerInSign) {
+            dialogBoxText.text = dialogText;
+            dialogBox.SetActive(true);
+        } 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            isPlayerInSign = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            dialogBox.SetActive(false);
+            isPlayerInSign = false;
+        }
+    }
+}
+```
+
+## 27.2	UI：对话框
+
+对话框素材：`Assets/Sprite/ForeGround/DialogBox`
+
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+- **Sprite Editor**：将绿色框拖拽一下
+
+<img src="AssetMarkdown/image-20240107165318117.png" alt="image-20240107165318117" style="zoom:80%;" />
+
+新建**UI|图像**，重命名为`DialogBox`
+
+- **源图像**：`DialogBox`
+- 默认不显示
+
+新建**UI|文本**，重命名为`DialogBoxText`，作为`DialogBox`的子对象
