@@ -1422,3 +1422,43 @@ public class Sign : MonoBehaviour {
 - 默认不显示
 
 新建**UI|文本**，重命名为`DialogBoxText`，作为`DialogBox`的子对象
+
+# 28、光照：呼吸灯光
+
+## 28.1	光照
+
+添加包：`Universal RP`
+
+新建**渲染|URP配置文件（带2D渲染器）**，重命名为`Universal Render Pipeline Asset`
+
+修改**项目设置|图像|可编写脚本的渲染管道设置**为：`Universal Render Pipeline Asset`
+
+将所有对象的**渲染器|材质**，更改为：`Sprite-Lit-Default`
+
+添加光源：
+
+- **灯光|全局光2D**：全局光照
+- **灯光|聚光灯2D**：聚光灯，可通过调整角度变为点光源
+- **灯光|自由形式光源2D**：任意多边形
+
+## 28.2	场景：火炬物体
+
+火把素材：`Assets/Sprite/Lights/Torch`
+
+- **Sprite模式**：多个
+- **每单位像素数**：16
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割动画：
+
+- 每个单元的尺寸：16×16像素
+
+将火把添加到场景中
+
+- **排序图层**：Item
+
+添加子对象：**灯光|聚光灯2D**
+
+- 添加组件：`Animator`
+  - 创建动画控制器，并录制动画，赋值给Animator组件
