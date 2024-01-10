@@ -1457,8 +1457,10 @@ public class Sign : MonoBehaviour {
 将火把添加到场景中
 
 - **排序图层**：Item
-- 添加组件：`Animator`
-  - 创建动画控制器，并录制动画，赋值给Animator组件
+- 添加组件：
+  - `Animator`：创建动画控制器，并录制动画，赋值给Animator组件
+  - `Light 2D`：表示火把的照明范围
+
 
 # 29、敌人：受伤值浮动显示
 
@@ -1519,6 +1521,8 @@ public void TakeDamage(int damage) {
 
 # 30、场景：游戏背景平滑切换
 
+> 原理：前一张图的透明度逐渐变为0，在变为0时停留一会，并切换下一张图，然后再将下一张图的透明度逐渐变为1
+
 背景素材：`Assets/Sprite/BackGround/selda1~2`
 
 创建物体，重命名为`BackGroundPicture`
@@ -1569,6 +1573,162 @@ public class BackGroundPicture : MonoBehaviour {
             spriteRenderer.sprite = backGroundPictures[currentBackGround];
             needChange = false;
         }
+    }
+}
+```
+
+# 31、音效：捡金币&将金币投入垃圾桶
+
+## 31.1	场景：垃圾桶
+
+垃圾桶素材：`Assets/Sprite/ForeGround/TrashBin`
+
+- **每单位像素数**：12（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将垃圾桶添加到场景中
+
+- **排序图层**：Item
+- **图层**：Item（与地面碰撞，与Player不碰撞）
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：静态
+  - `Box Collider 2D`
+  - 自定义脚本：`TrashBin`
+- 添加空子对象，重命名为`TriggerBox`：与Player进行碰撞
+  - **图层**：TriggerBox（仅与Player碰撞）
+  - 添加组件：`Box Collider 2D`
+    - **是触发器**：勾选
+
+新建脚本：`TrashBin`
+
+```c#
+public class TrashBin : MonoBehaviour {
+    [Tooltip("垃圾桶内金币数量")]
+    public int coinCurrent = 0;
+    [Tooltip("垃圾桶内金币数量上限")]
+    public int coinMax = 10;
+
+    private bool isPlayerInTrashBin = false;    // 玩家是否进入了垃圾桶范围
+
+    void Update() {
+        // 按下F键投币
+        if (Input.GetKeyDown(KeyCode.F) && isPlayerInTrashBin && coinCurrent < coinMax && UICoin.coinNumber > 0) {
+            UICoin.coinNumber--;
+            coinCurrent++;
+            SoundManager.instance.PlayThrowCoin();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            isPlayerInTrashBin = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            isPlayerInTrashBin = false;
+        }
+    }
+}
+```
+
+## 31.2	UI：跟随垃圾桶
+
+新建**UI|图像**，重命名为`UITrashBinCoinBar`
+
+- **源图像**：`HP_MP_Bar_0`
+
+新建**UI|图像**，重命名为`TrashBinCoin`
+
+- **源图像**：`HP_MP_Bar_2`
+- **图像类型**：已填充
+- **填充方法**：水平
+- **填充原点**：左
+
+新建**UI|文本**，重命名为`TrashBinCoinText`
+
+新建脚本：`TrashBinUI`，添加到垃圾桶对象上
+
+```c#
+public class TrashBinUI : MonoBehaviour {
+    [Tooltip("全局UI画布")]
+    public RectTransform CanvasRect;
+
+    [Tooltip("垃圾桶UI预制件")]
+    public GameObject uiPrefab;
+    [Tooltip("垃圾桶UI偏移")]
+    public Vector2 offset = new Vector2(0, 80);
+
+
+    private TrashBin trashBin;          // 垃圾桶脚本
+    private RectTransform trashBinUI;   // 垃圾桶UI元素
+    private Image coinNumberImage;      // 垃圾桶显示金币数量的Image组件
+    private Text coinNumberText;        // 垃圾桶显示金币数量的Text组件
+
+    void Start() {
+        GameObject gameObject = Instantiate(uiPrefab, GameObject.Find("Canvas").transform);
+        trashBinUI = gameObject.GetComponent<RectTransform>();
+        coinNumberImage = gameObject.transform.GetChild(0).GetComponent<Image>();
+        coinNumberText = gameObject.transform.GetChild(1).GetComponent<Text>();
+        trashBin = GetComponent<TrashBin>();
+    }
+
+    void Update() {
+        // 将垃圾桶的世界坐标转换为视口坐标
+        Vector2 viewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+        // 将视口坐标转换为画布坐标
+        Vector2 screenPosition = new Vector2(
+            ((viewportPosition.x * CanvasRect.sizeDelta.x) - (CanvasRect.sizeDelta.x * 0.5f)) + offset.x,
+            ((viewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * 0.5f)) + offset.y
+        );
+        // 更新垃圾桶UI元素的位置
+        trashBinUI.anchoredPosition = screenPosition;
+
+        // 更新垃圾桶UI中金币数量的显示
+        coinNumberImage.fillAmount = (float)trashBin.coinCurrent / trashBin.coinMax;
+        coinNumberText.text = trashBin.coinCurrent + " / " + trashBin.coinMax;
+    }
+}
+```
+
+## 31.3	音效：捡金币&投币
+
+音效素材：`Assets/Sprite/Resources/PickCoin、ThrowCoin`
+
+新建空对象，重命名为`SoundManager`
+
+- 添加组件：`Audio Source`
+- 自定义脚本：`SoundManager`
+
+新建脚本：`SoundManager`
+
+```c#
+public class SoundManager : MonoBehaviour {
+    static public SoundManager instance;
+
+    [Tooltip("音效：捡金币")]
+    public AudioClip pickCoin;
+    [Tooltip("音效：投金币")]
+    public AudioClip throwCoin;
+
+    private AudioSource audioSource;
+
+    void Start() {
+        instance = this;
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public void PlayPickCoin() {
+        if (pickCoin == null) return;
+        audioSource.PlayOneShot(pickCoin);
+    }
+
+    public void PlayThrowCoin() {
+        if (pickCoin == null) return;
+        audioSource.PlayOneShot(throwCoin);
     }
 }
 ```

@@ -7,6 +7,7 @@ public class Coin : MonoBehaviour {
         if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
             UICoin.coinNumber++;
             Destroy(gameObject);
+            SoundManager.instance.PlayPickCoin();
         }
     }
 }
