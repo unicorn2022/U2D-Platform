@@ -2033,3 +2033,52 @@ public class DoorToNextLevel : MonoBehaviour {
 ```
 
 在**文件|生成设置**中，将场景添加到Build中
+
+# 36、菜单：游戏开始菜单
+
+新建场景，重命名为`Menu`
+
+新建**UI|画布**，在其下新建**UI|面板**，重命名为`MainMenu`，然后在其下新建
+
+- **UI|按钮**，重命名为`PlayButton`，并设置按下的颜色
+  - 添加鼠标单击事件：`Canvas`的`MainMenu`组件的`PlayGame`方法
+- **UI|按钮**，重命名为`QuitButton`，并设置按下的颜色
+  - 添加鼠标单击事件：`Canvas`的`MainMenu`组件的`QuitGame`方法
+
+设置`EventSystem`的**首个选择项**为`PlayButton`
+
+新建脚本：`MainMenu`，作为**画布**的组件
+
+```c#
+public class MainMenu : MonoBehaviour {
+    public void PlayGame() {
+        SceneManager.LoadScene(1);
+    }
+
+    public void QuitGame() {
+        Application.Quit();
+    }
+}
+```
+
+新建脚本：`InitButton`，作为**MainMenu**的组件
+
+```c#
+public class InitButton : MonoBehaviour {
+    private GameObject lastSelect;
+
+    void Start() {
+        lastSelect = new GameObject();
+    }
+
+    void Update() {
+        if(EventSystem.current.currentSelectedGameObject == null) {
+            EventSystem.current.SetSelectedGameObject(lastSelect);
+        }
+        else {
+            lastSelect = EventSystem.current.currentSelectedGameObject;
+        }
+    }
+}
+```
+
