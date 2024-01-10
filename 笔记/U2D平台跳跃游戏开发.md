@@ -1733,3 +1733,97 @@ public class SoundManager : MonoBehaviour {
 }
 ```
 
+# 32、角色：扔出回旋镖
+
+回旋镖素材：`Assets/Sprite/Player/Sickle`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将回旋镖添加到场景中
+
+- **排序图层**：Weapon
+- **图层**：Weapon（仅与Enemy、Player碰撞）
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Kinematic
+    - **碰撞检测**：连续
+    - **休眠模式**：从不休眠
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`Sickle`
+
+新建脚本：`Sickle`
+
+```c#
+public class Sickle : MonoBehaviour {
+    [Tooltip("飞行速度")]
+    public float flySpeed = 20.0f;
+    [Tooltip("旋转速度")]
+    public float rotateSpeed = 30.0f;
+    [Tooltip("伤害")]
+    public int damage = 2;
+
+    private Rigidbody2D rigidbody;
+    private Transform playerTransform;
+    private CameraShake cameraShake;
+    private Vector2 startSpeed;     // 回旋镖飞出去的速度
+    private float returnSpeed;      // 回旋镖回到Player身边的速度
+
+    void Start() {
+        rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody.velocity = transform.right * flySpeed;
+        startSpeed = rigidbody.velocity;
+        returnSpeed = 0;
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        cameraShake = GameObject.FindGameObjectWithTag("CameraShake").GetComponent<CameraShake>();
+    }
+
+    void Update() {
+        // 旋转
+        transform.Rotate(0, 0, -rotateSpeed);
+
+        // 向前飞, 直到到达最远处
+        if(rigidbody.velocity.magnitude > 0.1f) {
+            rigidbody.velocity -= startSpeed * Time.deltaTime;
+        } 
+        // 到达最远处后, 开始向Player飞
+        else {
+            if(returnSpeed < flySpeed) returnSpeed += flySpeed * Time.deltaTime;
+            transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, returnSpeed * Time.deltaTime);
+        }
+        
+
+        // 回旋镖回到Player身边时, 销毁自身
+        if (Vector2.Distance(transform.position, playerTransform.position) < 0.5f) {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Enemy")) {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            cameraShake.Shake();
+        }
+    }
+}
+```
+
+新建空对象，重命名为`PlayerSickleAttack`，作为`Player`的子对象
+
+- 添加自定义脚本：`PlayerSickleAttack`
+
+```c#
+public class PlayerSickleAttack : MonoBehaviour {
+    [Tooltip("回旋镖")]
+    public GameObject sickle;
+
+    void Update() {
+        if(Input.GetKeyDown(KeyCode.Q)) {
+            Instantiate(sickle, transform.position, transform.rotation);
+        }
+    }
+}
+```
+
