@@ -11,14 +11,12 @@ public class PlayerAttack : MonoBehaviour {
 
     private bool canAttack = true; // 角色是否可以攻击
 
-    void Start()
-    {
+    void Start() {
         animator = transform.parent.GetComponent<Animator>();
         collider = GetComponent<PolygonCollider2D>();
     }
 
-    void Update()
-    {
+    void Update() {
         Attack();
     }
 
@@ -30,28 +28,7 @@ public class PlayerAttack : MonoBehaviour {
         if (Input.GetButton("Attack") && canAttack) {
             animator.SetTrigger("Attack");
             canAttack = false;
-            Invoke("AttackStart", 0.3f);
-            Invoke("AttackReset", 0.5f);
         }
-    }
-    /// <summary>
-    /// 角色攻击后, 待刀光出现(0.3s), 启动碰撞体
-    /// </summary>
-    void AttackStart() {
-        collider.enabled = true;
-        Invoke("AttackEnd", 0.1f);
-    }
-    /// <summary>
-    /// 角色攻击启动碰撞体, 一段时间后(0.1s), 关闭碰撞体
-    /// </summary>
-    void AttackEnd() {
-        collider.enabled = false;
-    }
-    /// <summary>
-    /// 角色攻击后, 等待动画播放完成(0.5s), 重置攻击状态
-    /// </summary>
-    void AttackReset() {
-        canAttack = true;
     }
 
     /// <summary>
@@ -59,8 +36,30 @@ public class PlayerAttack : MonoBehaviour {
     /// </summary>
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision) {
-        if(collision.gameObject.tag.Equals("Enemy")) {
+        if (collision.gameObject.tag.Equals("Enemy")) {
             collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
         }
     }
+
+
+    #region 角色攻击事件
+    /// <summary>
+    /// 角色攻击后, 待刀光出现(0.3s), 启动碰撞体
+    /// </summary>
+    public void AttackStart() {
+        collider.enabled = true;
+    }
+    /// <summary>
+    /// 角色攻击启动碰撞体, 一段时间后(0.1s), 关闭碰撞体
+    /// </summary>
+    public void AttackEnd() {
+        collider.enabled = false;
+    }
+    /// <summary>
+    /// 角色攻击后, 等待动画播放完成(0.5s), 重置攻击状态
+    /// </summary>
+    public void AttackReset() {
+        canAttack = true;
+    }
+    #endregion
 }

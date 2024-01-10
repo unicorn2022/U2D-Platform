@@ -13,11 +13,14 @@ public class PlayerController : MonoBehaviour
     public float doubleJumpSpeed = 5.0f;
     [Tooltip("角色爬梯子的速度")]
     public float climbSpeed = 4.0f;
+    [Tooltip("角色在单向移动平台上, 按下向下键后, 掉落的时间")]
+    public float changeLayerTime = 0.3f;
 
 
     private Rigidbody2D rigidbody;
     private Animator animator;
     private BoxCollider2D feetCollider;
+    private PlayerAttack playerAttack;
 
     private bool canDoubleJump = false; // 角色是否可以二段跳
     private float playerGravity;        // 角色初始的重力系数
@@ -35,6 +38,7 @@ public class PlayerController : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         feetCollider = GetComponent<BoxCollider2D>();
+        playerAttack = GetComponentInChildren<PlayerAttack>();
         playerGravity = rigidbody.gravityScale;
     }
 
@@ -151,7 +155,7 @@ public class PlayerController : MonoBehaviour
             // 将角色的碰撞层短暂改为OneWayPlatform, 使角色可以穿过单向移动平台
             gameObject.layer = LayerMask.NameToLayer("OneWayPlatform");
             // 0.3秒后, 将角色的碰撞层改回Player
-            Invoke("ResetPlayerLayer", 0.3f);
+            Invoke("ResetPlayerLayer", changeLayerTime);
         }
     }
     void ResetPlayerLayer() {
@@ -193,4 +197,18 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
+
+    #region 角色攻击事件
+    void AttackStart() {
+        playerAttack.AttackStart();
+    }
+    void AttackEnd() {
+        playerAttack.AttackEnd();
+    }
+    void AttackReset() {
+        playerAttack.AttackReset();
+    }
+    #endregion
+
 }

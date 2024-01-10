@@ -9,6 +9,8 @@ public class Bomb : MonoBehaviour {
     public Vector2 startSpeed = new Vector2(4, 10);
     [Tooltip("炸弹的伤害")]
     public int damage = 5;
+    [Tooltip("扔出炸弹后, 延迟爆炸")]
+    public float explodeTime = 1.5f;
 
     private Rigidbody2D rigidbody;
     private Animator animator;
@@ -20,7 +22,7 @@ public class Bomb : MonoBehaviour {
         explosionRange = transform.GetChild(0).gameObject.GetComponent<PolygonCollider2D>();
         rigidbody.velocity = transform.right * startSpeed.x + transform.up * startSpeed.y;
 
-        Invoke("Explode", 1.5f);
+        Invoke("Explode", explodeTime);
     }
 
     /// <summary>

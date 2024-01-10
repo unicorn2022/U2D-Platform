@@ -50,8 +50,6 @@ public class PlayerHealth : MonoBehaviour
             // 玩家死亡后, 不能移动, 不能受重力影响
             rigidbody.velocity = Vector2.zero;
             rigidbody.gravityScale = 0;
-            // 玩家死亡后, 0.9s 后销毁角色
-            Invoke("KillPlayer", 0.9f);
             return;
         }
 
@@ -82,7 +80,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// 角色播放完死亡动画后(0.9s), 销毁角色
+    /// 角色播放完死亡动画后, 销毁角色
     /// </summary>
     void KillPlayer() {
         Destroy(gameObject);

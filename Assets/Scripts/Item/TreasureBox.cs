@@ -19,8 +19,6 @@ public class TreasureBox : MonoBehaviour {
         if (canOpen && !isOpened && Input.GetKeyDown(KeyCode.F)) {
             animator.SetTrigger("Open");
             isOpened = true;
-            Invoke("GenerateCoin", 0.5f);
-            Invoke("DestroyBox", 5f);
         }
     }
 
