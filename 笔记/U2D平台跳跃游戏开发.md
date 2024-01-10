@@ -11,11 +11,9 @@
 
 <img src="AssetMarkdown/PlayerSheet.png" alt="PlayerSheet" style="zoom:80%;" />
 
-切割动画：
+TreasureBox动画：
 
 - 每个单元的尺寸：64×32像素
-
-生成动画：
 
 - 选择第1帧，拖入场景，生成原始人物`Player`
 - 选择动画对应的多个序列帧，拖拽至人物身上，自动创建动画
@@ -1827,3 +1825,83 @@ public class PlayerSickleAttack : MonoBehaviour {
 }
 ```
 
+# 33、角色：开宝箱
+
+宝箱素材：`Assets/Sprite/ForeGround/Item/TreasureBox`
+
+- **Sprite模式**：多个
+- **每单位像素数**：128（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割并创建动画：
+
+- 每个单元的尺寸：300×300像素
+- Idle => Opening：触发器`Open`
+
+<img src="AssetMarkdown/image-20240110190437984.png" alt="image-20240110190437984" style="zoom:80%;" />
+
+将宝箱添加到场景中
+
+- **排序图层**：Item
+- **图层**：Item（仅与地面碰撞）
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Dynamic
+    - **碰撞检测**：连续
+    - **休眠模式**：从不休眠
+  - `Box Collider 2D`
+  - 自定义脚本：`TreasureBox`
+- 添加空子对象，重命名为`TriggerBox`：与Player进行碰撞
+  - **图层**：TriggerBox（仅与Player碰撞）
+  - 添加组件：`Box Collider 2D`
+    - **是触发器**：勾选
+
+新建脚本：`TreasureBox`
+
+```c#
+public class TreasureBox : MonoBehaviour {
+    [Tooltip("宝箱中的物品")]
+    public GameObject coin;
+
+    private bool canOpen = false;
+    private bool isOpened = false;
+    private Animator animator;
+
+    void Start() {
+        animator = GetComponent<Animator>();
+    }
+
+    void Update() {
+        // F键开启宝箱
+        if (canOpen && !isOpened && Input.GetKeyDown(KeyCode.F)) {
+            animator.SetTrigger("Open");
+            isOpened = true;
+            Invoke("GenerateCoin", 0.5f);
+            Invoke("DestroyBox", 5f);
+        }
+    }
+
+    void GenerateCoin() {
+         Instantiate(coin, transform.position, Quaternion.identity);
+    }
+
+    void DestroyBox() {
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            canOpen = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            canOpen = false;
+        }
+    }
+}
+```
+
+将`Coin`的**图层顺序**改为`1`，从而让金币显示在宝箱前面
