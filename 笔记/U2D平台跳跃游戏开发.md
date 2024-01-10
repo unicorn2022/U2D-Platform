@@ -1595,7 +1595,7 @@ public class BackGroundPicture : MonoBehaviour {
   - `Box Collider 2D`
   - 自定义脚本：`TrashBin`
 - 添加空子对象，重命名为`TriggerBox`：与Player进行碰撞
-  - **图层**：TriggerBox（仅与Player碰撞）
+  - **图层**：TriggerBox（仅与Enemy、Player碰撞）
   - 添加组件：`Box Collider 2D`
     - **是触发器**：勾选
 
@@ -1853,7 +1853,7 @@ public class PlayerAttackSickle : MonoBehaviour {
   - `Box Collider 2D`
   - 自定义脚本：`TreasureBox`
 - 添加空子对象，重命名为`TriggerBox`：与Player进行碰撞
-  - **图层**：TriggerBox（仅与Player碰撞）
+  - **图层**：TriggerBox（仅与Enemy、Player碰撞）
   - 添加组件：`Box Collider 2D`
     - **是触发器**：勾选
 
@@ -1991,5 +1991,45 @@ public class Bomb : MonoBehaviour {
 - 添加自定义脚本：`PlayerAttackBomb`
 
 ```c#
+public class PlayerAttackBomb : MonoBehaviour { 
+    [Tooltip("炸弹")]
+    public GameObject bomb;
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            Instantiate(bomb, transform.position, transform.rotation);
+        }
+    }
+}
 ```
 
+# 35、切换游戏关卡
+
+传送门素材：`Assets/Sprite/ForeGround/Item/Door`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将传送门添加到场景中
+
+- **排序图层**：Item
+- **图层**：TriggerBox（仅与Enemy、Player碰撞）
+- 添加组件：
+  - `Boc Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`DoorToNextLevel`
+
+新建脚本：`DoorToNextLevel`
+
+```c#
+public class DoorToNextLevel : MonoBehaviour {
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.PolygonCollider2D") {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+    }
+}
+```
+
+在**文件|生成设置**中，将场景添加到Build中
