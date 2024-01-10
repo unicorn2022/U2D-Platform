@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSickleAttack : MonoBehaviour
+public class PlayerAttackSickle : MonoBehaviour
 {
     [Tooltip("回旋镖")]
     public GameObject sickle;
 
     void Update() {
-        if(Input.GetKeyDown(KeyCode.Q)) {
+        if(Input.GetKeyDown(KeyCode.E)) {
             Instantiate(sickle, transform.position, transform.rotation);
         }
     }

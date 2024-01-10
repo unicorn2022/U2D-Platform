@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour
-{
+public class PlayerAttack : MonoBehaviour {
     [Tooltip("角色攻击的伤害")]
     public int damage = 2;
 

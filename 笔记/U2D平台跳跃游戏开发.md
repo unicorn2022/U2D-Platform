@@ -11,7 +11,7 @@
 
 <img src="AssetMarkdown/PlayerSheet.png" alt="PlayerSheet" style="zoom:80%;" />
 
-TreasureBox动画：
+切割并创建动画：
 
 - 每个单元的尺寸：64×32像素
 
@@ -1731,7 +1731,7 @@ public class SoundManager : MonoBehaviour {
 }
 ```
 
-# 32、角色：扔出回旋镖
+# 32、角色：按E扔出回旋镖
 
 回旋镖素材：`Assets/Sprite/Player/Sickle`
 
@@ -1808,12 +1808,12 @@ public class Sickle : MonoBehaviour {
 }
 ```
 
-新建空对象，重命名为`PlayerSickleAttack`，作为`Player`的子对象
+新建空对象，重命名为`PlayerAttackSickle`，作为`Player`的子对象
 
-- 添加自定义脚本：`PlayerSickleAttack`
+- 添加自定义脚本：`PlayerAttackSickle`
 
 ```c#
-public class PlayerSickleAttack : MonoBehaviour {
+public class PlayerAttackSickle : MonoBehaviour {
     [Tooltip("回旋镖")]
     public GameObject sickle;
 
@@ -1905,3 +1905,91 @@ public class TreasureBox : MonoBehaviour {
 ```
 
 将`Coin`的**图层顺序**改为`1`，从而让金币显示在宝箱前面
+
+# 34、玩家：按Q扔出炸弹
+
+炸弹素材：`Assets/Sprite/Player/Bomb`
+
+- **Sprite模式**：多个
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割并创建动画：
+
+- 每个单元的尺寸：90×50像素
+- Idle => Explode：触发器`Explode`
+
+<img src="AssetMarkdown/image-20240110203246881.png" alt="image-20240110203246881" style="zoom:80%;" />
+
+将炸弹添加到场景中
+
+- **排序图层**：Weapon
+- **图层**：Weapon（仅与Enemy、Player碰撞）
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Dynamic
+    - **碰撞检测**：连续
+    - **休眠模式**：从不休眠
+  - `Circle Collider 2D`
+    - **是触发器**：不勾选
+  - 自定义脚本：`Bomb`
+  - 添加空子对象，重命名为`ExplosionRange`：与Enemy、Player进行碰撞
+    - **图层**：TriggerBox（仅与Enemy、Player碰撞）
+    - 添加组件：`Polygon Collider 2D`
+      - **是触发器**：勾选
+
+新建脚本：`Bomb`
+
+```c#
+public class Bomb : MonoBehaviour {
+    [Tooltip("炸弹的初始速度")]
+    public Vector2 startSpeed;
+    [Tooltip("炸弹的伤害")]
+    public int damage = 5;
+
+    private Rigidbody2D rigidbody;
+    private Animator animator;
+    private GameObject explosionRange;
+
+    void Start() {
+        rigidbody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        explosionRange = transform.GetChild(0).gameObject;
+        rigidbody.velocity = transform.right * startSpeed.x + transform.up * startSpeed.y;
+
+        Invoke("Explode", 1.5f);
+    }
+
+    void Explode() {
+        animator.SetTrigger("Explode");
+    }
+
+    void StartAttack() {
+        explosionRange.SetActive(true);
+    }
+
+    void DestroyBomb() {
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        // 炸弹爆炸时, 对敌人造成伤害
+        if (collision.gameObject.CompareTag("Enemy")) {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        }
+        // 炸弹爆炸时, 对玩家造成伤害
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.PolygonCollider2D") {
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
+        }
+    }
+}
+```
+
+新建空对象，重命名为`PlayerAttackBomb`，作为`Player`的子对象
+
+- 添加自定义脚本：`PlayerAttackBomb`
+
+```c#
+```
+
