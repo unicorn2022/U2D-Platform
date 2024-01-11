@@ -2131,3 +2131,40 @@ public class PauseMenu : MonoBehaviour {
 ```
 
 为暂停菜单的三个按钮添加相应的点击事件
+
+# 38、UI：场景加载进度条
+
+新建**UI|画布**，重命名为`LoadingScreen`
+
+新建**UI|滑动条**，重命名为`LoadingSlider`，作为`LoadingScreen`的子对象
+
+新建**UI|文本**，重命名为`LoadingText`，作为`LoadingSlider`的子对象
+
+修改脚本：`MainMenu`（挂载在`Canvas`上）
+
+```c#
+public GameObject loadingScreen;
+public Slider loadingSlider;
+public Text loadingText;
+
+/// <summary>
+/// 异步加载场景
+/// </summary>
+/// <param name="sceneIndex">场景序号</param>
+public void LoadLevel(int sceneIndex) {
+    StartCoroutine(AsyncLoadLevel(sceneIndex));
+}
+IEnumerator AsyncLoadLevel(int sceneIndex) {
+    AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
+    loadingScreen.SetActive(true);
+
+    // 等待操作完成
+    while (!operation.isDone) {
+        float progress = operation.progress / 0.9f; // progress的范围是[0, 0.9]
+        loadingSlider.value = progress;
+        loadingText.text = string.Format("{0:0}%", progress * 100);
+        yield return null;
+    }
+}
+```
+
