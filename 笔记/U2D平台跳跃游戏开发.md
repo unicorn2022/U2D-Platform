@@ -2082,3 +2082,52 @@ public class InitButton : MonoBehaviour {
 }
 ```
 
+# 37、菜单：按下ESC进入游戏暂停菜单
+
+将上节课做的菜单面板`MainMenu`复制一份，重命名为`PauseMenu`，作为`Canvas`的子对象
+
+- 将`PlayButton`更改为`ResumeButton`，表示继续游戏
+- 将复制一份`Button`，更改为`MainMenuButton`，表示回到主菜单
+
+新建脚本：`PauseMenu`，作为**画布**的组件
+
+```c#
+public class PauseMenu : MonoBehaviour {
+    [Tooltip("游戏是否暂停")]
+    public static bool isPaused = false;
+    [Tooltip("暂停菜单UI")]
+    public GameObject pauseMenuUI;
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (isPaused) ResumeGame();
+            else PauseGame();
+        }
+    }
+
+    public void ResumeGame() {
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1.0f;
+        isPaused = false;
+    }
+
+    public void PauseGame() {
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0.0f;
+        isPaused = true;
+    }
+
+    public void MainMenu() {
+        Time.timeScale = 1.0f;
+        isPaused = false;
+        SceneManager.LoadScene(0);
+    }
+
+    public void QuitGame() {
+        Application.Quit();
+    }
+}
+
+```
+
+为暂停菜单的三个按钮添加相应的点击事件
