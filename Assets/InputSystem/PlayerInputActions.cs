@@ -46,7 +46,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""PlayerAttack"",
                     ""type"": ""Button"",
                     ""id"": ""0883f8f7-ec6d-4dc7-832f-6bccf6126450"",
                     ""expectedControlType"": ""Button"",
@@ -55,7 +55,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Sickle"",
+                    ""name"": ""PlayerAttackSickle"",
                     ""type"": ""Button"",
                     ""id"": ""f1e5b565-327b-4321-81f6-ba994461bd26"",
                     ""expectedControlType"": ""Button"",
@@ -64,9 +64,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Bomb"",
+                    ""name"": ""PlayerAttackBomb"",
                     ""type"": ""Button"",
                     ""id"": ""0f26c244-5820-4e83-b658-9f623397865b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlayerAttackArrow"",
+                    ""type"": ""Button"",
+                    ""id"": ""7c1baffb-1871-4847-9699-a6b2911470a3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -352,7 +361,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyBoard"",
-                    ""action"": ""Attack"",
+                    ""action"": ""PlayerAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -363,18 +372,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XBoxGamePad"",
-                    ""action"": ""Attack"",
+                    ""action"": ""PlayerAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""78ace7d8-954d-4115-a496-fd50caf97c90"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyBoard"",
-                    ""action"": ""Sickle"",
+                    ""action"": ""PlayerAttackSickle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -385,18 +394,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XBoxGamePad"",
-                    ""action"": ""Sickle"",
+                    ""action"": ""PlayerAttackSickle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""382ea32c-f20e-4e77-a3ce-439d8de875b8"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/u"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyBoard"",
-                    ""action"": ""Bomb"",
+                    ""action"": ""PlayerAttackBomb"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -407,7 +416,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XBoxGamePad"",
-                    ""action"": ""Bomb"",
+                    ""action"": ""PlayerAttackBomb"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -454,6 +463,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""98cd1f22-ac20-4f81-ad3e-b0c709df8aa8"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerAttackArrow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -475,9 +495,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_GamePlay = asset.FindActionMap("GamePlay", throwIfNotFound: true);
         m_GamePlay_Move = m_GamePlay.FindAction("Move", throwIfNotFound: true);
         m_GamePlay_Jump = m_GamePlay.FindAction("Jump", throwIfNotFound: true);
-        m_GamePlay_Attack = m_GamePlay.FindAction("Attack", throwIfNotFound: true);
-        m_GamePlay_Sickle = m_GamePlay.FindAction("Sickle", throwIfNotFound: true);
-        m_GamePlay_Bomb = m_GamePlay.FindAction("Bomb", throwIfNotFound: true);
+        m_GamePlay_PlayerAttack = m_GamePlay.FindAction("PlayerAttack", throwIfNotFound: true);
+        m_GamePlay_PlayerAttackSickle = m_GamePlay.FindAction("PlayerAttackSickle", throwIfNotFound: true);
+        m_GamePlay_PlayerAttackBomb = m_GamePlay.FindAction("PlayerAttackBomb", throwIfNotFound: true);
+        m_GamePlay_PlayerAttackArrow = m_GamePlay.FindAction("PlayerAttackArrow", throwIfNotFound: true);
         m_GamePlay_Communicate = m_GamePlay.FindAction("Communicate", throwIfNotFound: true);
         m_GamePlay_Pause = m_GamePlay.FindAction("Pause", throwIfNotFound: true);
     }
@@ -543,9 +564,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IGamePlayActions> m_GamePlayActionsCallbackInterfaces = new List<IGamePlayActions>();
     private readonly InputAction m_GamePlay_Move;
     private readonly InputAction m_GamePlay_Jump;
-    private readonly InputAction m_GamePlay_Attack;
-    private readonly InputAction m_GamePlay_Sickle;
-    private readonly InputAction m_GamePlay_Bomb;
+    private readonly InputAction m_GamePlay_PlayerAttack;
+    private readonly InputAction m_GamePlay_PlayerAttackSickle;
+    private readonly InputAction m_GamePlay_PlayerAttackBomb;
+    private readonly InputAction m_GamePlay_PlayerAttackArrow;
     private readonly InputAction m_GamePlay_Communicate;
     private readonly InputAction m_GamePlay_Pause;
     public struct GamePlayActions
@@ -554,9 +576,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public GamePlayActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_GamePlay_Move;
         public InputAction @Jump => m_Wrapper.m_GamePlay_Jump;
-        public InputAction @Attack => m_Wrapper.m_GamePlay_Attack;
-        public InputAction @Sickle => m_Wrapper.m_GamePlay_Sickle;
-        public InputAction @Bomb => m_Wrapper.m_GamePlay_Bomb;
+        public InputAction @PlayerAttack => m_Wrapper.m_GamePlay_PlayerAttack;
+        public InputAction @PlayerAttackSickle => m_Wrapper.m_GamePlay_PlayerAttackSickle;
+        public InputAction @PlayerAttackBomb => m_Wrapper.m_GamePlay_PlayerAttackBomb;
+        public InputAction @PlayerAttackArrow => m_Wrapper.m_GamePlay_PlayerAttackArrow;
         public InputAction @Communicate => m_Wrapper.m_GamePlay_Communicate;
         public InputAction @Pause => m_Wrapper.m_GamePlay_Pause;
         public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
@@ -574,15 +597,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @Attack.started += instance.OnAttack;
-            @Attack.performed += instance.OnAttack;
-            @Attack.canceled += instance.OnAttack;
-            @Sickle.started += instance.OnSickle;
-            @Sickle.performed += instance.OnSickle;
-            @Sickle.canceled += instance.OnSickle;
-            @Bomb.started += instance.OnBomb;
-            @Bomb.performed += instance.OnBomb;
-            @Bomb.canceled += instance.OnBomb;
+            @PlayerAttack.started += instance.OnPlayerAttack;
+            @PlayerAttack.performed += instance.OnPlayerAttack;
+            @PlayerAttack.canceled += instance.OnPlayerAttack;
+            @PlayerAttackSickle.started += instance.OnPlayerAttackSickle;
+            @PlayerAttackSickle.performed += instance.OnPlayerAttackSickle;
+            @PlayerAttackSickle.canceled += instance.OnPlayerAttackSickle;
+            @PlayerAttackBomb.started += instance.OnPlayerAttackBomb;
+            @PlayerAttackBomb.performed += instance.OnPlayerAttackBomb;
+            @PlayerAttackBomb.canceled += instance.OnPlayerAttackBomb;
+            @PlayerAttackArrow.started += instance.OnPlayerAttackArrow;
+            @PlayerAttackArrow.performed += instance.OnPlayerAttackArrow;
+            @PlayerAttackArrow.canceled += instance.OnPlayerAttackArrow;
             @Communicate.started += instance.OnCommunicate;
             @Communicate.performed += instance.OnCommunicate;
             @Communicate.canceled += instance.OnCommunicate;
@@ -599,15 +625,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @Attack.started -= instance.OnAttack;
-            @Attack.performed -= instance.OnAttack;
-            @Attack.canceled -= instance.OnAttack;
-            @Sickle.started -= instance.OnSickle;
-            @Sickle.performed -= instance.OnSickle;
-            @Sickle.canceled -= instance.OnSickle;
-            @Bomb.started -= instance.OnBomb;
-            @Bomb.performed -= instance.OnBomb;
-            @Bomb.canceled -= instance.OnBomb;
+            @PlayerAttack.started -= instance.OnPlayerAttack;
+            @PlayerAttack.performed -= instance.OnPlayerAttack;
+            @PlayerAttack.canceled -= instance.OnPlayerAttack;
+            @PlayerAttackSickle.started -= instance.OnPlayerAttackSickle;
+            @PlayerAttackSickle.performed -= instance.OnPlayerAttackSickle;
+            @PlayerAttackSickle.canceled -= instance.OnPlayerAttackSickle;
+            @PlayerAttackBomb.started -= instance.OnPlayerAttackBomb;
+            @PlayerAttackBomb.performed -= instance.OnPlayerAttackBomb;
+            @PlayerAttackBomb.canceled -= instance.OnPlayerAttackBomb;
+            @PlayerAttackArrow.started -= instance.OnPlayerAttackArrow;
+            @PlayerAttackArrow.performed -= instance.OnPlayerAttackArrow;
+            @PlayerAttackArrow.canceled -= instance.OnPlayerAttackArrow;
             @Communicate.started -= instance.OnCommunicate;
             @Communicate.performed -= instance.OnCommunicate;
             @Communicate.canceled -= instance.OnCommunicate;
@@ -653,9 +682,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
-        void OnSickle(InputAction.CallbackContext context);
-        void OnBomb(InputAction.CallbackContext context);
+        void OnPlayerAttack(InputAction.CallbackContext context);
+        void OnPlayerAttackSickle(InputAction.CallbackContext context);
+        void OnPlayerAttackBomb(InputAction.CallbackContext context);
+        void OnPlayerAttackArrow(InputAction.CallbackContext context);
         void OnCommunicate(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
     }

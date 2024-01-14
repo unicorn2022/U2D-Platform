@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBat : Enemy
-{
+public class EnemyBat : Enemy {
     [Tooltip("敌人的移动速度")]
     public float speed = 2f;
     [Tooltip("敌人移动的等待时间")]

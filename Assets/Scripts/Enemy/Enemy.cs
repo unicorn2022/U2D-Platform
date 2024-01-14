@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
-{
+public class Enemy : MonoBehaviour {
     [Tooltip("敌人的血量")]
     public int health = 5;
     [Tooltip("敌人的伤害")]
@@ -32,8 +31,7 @@ public class Enemy : MonoBehaviour
     protected void Update() {
         if (health <= 0) {
             Instantiate(dropCoin, transform.position, Quaternion.identity);
-            // 由于脚本挂载在敌人的子物体上, 所以销毁敌人的父物体
-            Destroy(transform.parent.gameObject);
+            Destroy(gameObject);
         }
     }
 

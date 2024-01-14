@@ -9,7 +9,7 @@ public class PlayerAttack : MonoBehaviour {
     void Awake() {
         controls = new PlayerInputActions();
 
-        controls.GamePlay.Attack.started += ctx => Attack();
+        controls.GamePlay.PlayerAttack.started += ctx => Attack();
     }
     void OnEnable() {
         controls.GamePlay.Enable();

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4179619356618625061}
   - component: {fileID: 381723295817221697}
   m_Layer: 7
-  m_Name: PlayerAttackBomb
+  m_Name: U-PlayerAttackBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,6 +86,7 @@ Transform:
   - {fileID: 2089343193798193340}
   - {fileID: 1934054315421661757}
   - {fileID: 4179619356618625061}
+  - {fileID: 1512883523223552625}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5899486634683380336
@@ -336,6 +337,8 @@ MonoBehaviour:
   jumpSpeed: 8
   doubleJumpSpeed: 8
   climbSpeed: 4
+  changeLayerTime: 0.3
+  canDoubleJump: 0
   isGrounded: 0
   isOneWayPlatform: 0
   isLadder: 0
@@ -372,6 +375,51 @@ MonoBehaviour:
   image: {fileID: 0}
   flashTime: 0.1
   flashColor: {r: 1, g: 0, b: 0, a: 0.29411766}
+--- !u!1 &2327060184213492852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1512883523223552625}
+  - component: {fileID: 540257341314922015}
+  m_Layer: 7
+  m_Name: I-PlayerAttackArrow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1512883523223552625
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2327060184213492852}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3516707277498361876}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &540257341314922015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2327060184213492852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29082c13e319f74facac25fcd83139b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrow: {fileID: 9187470446074138228, guid: 0c62dec69a1cbb34d8f1229c943f5f77, type: 3}
 --- !u!1 &6610740832654819175
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +432,7 @@ GameObject:
   - component: {fileID: 838687066034581285}
   - component: {fileID: 185983445838353227}
   m_Layer: 7
-  m_Name: PlayerAttack
+  m_Name: J-PlayerAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -486,7 +534,7 @@ GameObject:
   - component: {fileID: 1934054315421661757}
   - component: {fileID: 5404933244536802962}
   m_Layer: 7
-  m_Name: PlayerAttackSickle
+  m_Name: Y-PlayerAttackSickle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

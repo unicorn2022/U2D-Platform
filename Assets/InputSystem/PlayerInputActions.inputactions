@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
+                    "name": "PlayerAttack",
                     "type": "Button",
                     "id": "0883f8f7-ec6d-4dc7-832f-6bccf6126450",
                     "expectedControlType": "Button",
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Sickle",
+                    "name": "PlayerAttackSickle",
                     "type": "Button",
                     "id": "f1e5b565-327b-4321-81f6-ba994461bd26",
                     "expectedControlType": "Button",
@@ -42,9 +42,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Bomb",
+                    "name": "PlayerAttackBomb",
                     "type": "Button",
                     "id": "0f26c244-5820-4e83-b658-9f623397865b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PlayerAttackArrow",
+                    "type": "Button",
+                    "id": "7c1baffb-1871-4847-9699-a6b2911470a3",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -330,7 +339,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyBoard",
-                    "action": "Attack",
+                    "action": "PlayerAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -341,18 +350,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XBoxGamePad",
-                    "action": "Attack",
+                    "action": "PlayerAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "78ace7d8-954d-4115-a496-fd50caf97c90",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/y",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyBoard",
-                    "action": "Sickle",
+                    "action": "PlayerAttackSickle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -363,18 +372,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XBoxGamePad",
-                    "action": "Sickle",
+                    "action": "PlayerAttackSickle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "382ea32c-f20e-4e77-a3ce-439d8de875b8",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/u",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyBoard",
-                    "action": "Bomb",
+                    "action": "PlayerAttackBomb",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -385,7 +394,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XBoxGamePad",
-                    "action": "Bomb",
+                    "action": "PlayerAttackBomb",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -430,6 +439,17 @@
                     "processors": "",
                     "groups": "XBoxGamePad",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "98cd1f22-ac20-4f81-ad3e-b0c709df8aa8",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlayerAttackArrow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

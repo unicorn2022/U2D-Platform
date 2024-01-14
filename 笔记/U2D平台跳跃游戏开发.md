@@ -1731,7 +1731,7 @@ public class SoundManager : MonoBehaviour {
 }
 ```
 
-# 32、角色：按E扔出回旋镖
+# 32、角色：按Y扔出回旋镖
 
 回旋镖素材：`Assets/Sprite/Player/Sickle`
 
@@ -1906,7 +1906,7 @@ public class TreasureBox : MonoBehaviour {
 
 将`Coin`的**图层顺序**改为`1`，从而让金币显示在宝箱前面
 
-# 34、玩家：按Q扔出炸弹
+# 34、玩家：按U扔出炸弹
 
 炸弹素材：`Assets/Sprite/Player/Bomb`
 
@@ -2387,6 +2387,96 @@ public class EnemySmartBat : Enemy {
         if (playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < radius) {
             transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, speed * Time.deltaTime);
         }
+    }
+}
+```
+
+# 43、玩家：按I键弓箭射击
+
+弓箭素材：`Assets/Sprite/Player/Arrow`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将弓箭添加到场景中
+
+- **排序图层**：Weapon
+- **图层**：TriggerBox（仅与Enemy、Player碰撞）
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Kinematic
+    - **碰撞检测**：连续
+    - **休眠模式**：从不休眠
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`Arrow`
+
+新建脚本：`Arrow`
+
+```c#
+public class Arrow : MonoBehaviour {
+    [Tooltip("箭的移动速度")]
+    public float speed = 15f;
+    [Tooltip("箭的伤害值")]
+    public int damage = 2;
+    [Tooltip("箭的最大飞行距离")]
+    public float maxDistance = 15f;
+
+    private Rigidbody2D rigidbody;
+    private Vector2 startPosition;
+
+    void Start() {
+        rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody.velocity = transform.right * speed;
+        startPosition = transform.position;
+    }
+
+    void Update() {
+        if (Vector2.Distance(transform.position, startPosition) > maxDistance) {
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 对敌人造成伤害
+    /// </summary>
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Enemy")) {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            Destroy(gameObject);
+        }
+    }
+}
+```
+
+新建空对象，重命名为`PlayerAttackArrow`，作为`Player`的子对象
+
+- 添加自定义脚本：`PlayerAttackArrow`
+
+```c#
+public class PlayerAttackArrow : MonoBehaviour {
+    #region Input System 的绑定
+    private PlayerInputActions controls;
+
+    void Awake() {
+        controls = new PlayerInputActions();
+
+        controls.GamePlay.Arrow.started += ctx => AttackArrow();
+    }
+    void OnEnable() {
+        controls.GamePlay.Enable();
+    }
+    void OnDisable() {
+        controls.GamePlay.Disable();
+    }
+    #endregion
+
+    [Tooltip("弓箭")]
+    public GameObject arrow;
+
+    void AttackArrow() {
+        Instantiate(arrow, transform.position, transform.rotation);
     }
 }
 ```

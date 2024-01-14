@@ -9,7 +9,7 @@ public class PlayerAttackBomb : MonoBehaviour {
     void Awake() {
         controls = new PlayerInputActions();
 
-        controls.GamePlay.Bomb.started += ctx => AttackBomb();
+        controls.GamePlay.PlayerAttackBomb.started += ctx => AttackBomb();
     }
     void OnEnable() {
         controls.GamePlay.Enable();

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttackSickle : MonoBehaviour {
+public class PlayerAttackArrow : MonoBehaviour {
     #region Input System 的绑定
     private PlayerInputActions controls;
 
     void Awake() {
         controls = new PlayerInputActions();
 
-        controls.GamePlay.PlayerAttackSickle.started += ctx => AttackSickle();
+        controls.GamePlay.PlayerAttackArrow.started += ctx => AttackArrow();
     }
     void OnEnable() {
         controls.GamePlay.Enable();
@@ -18,11 +18,11 @@ public class PlayerAttackSickle : MonoBehaviour {
         controls.GamePlay.Disable();
     }
     #endregion
-    
-    [Tooltip("回旋镖")]
-    public GameObject sickle;
-    
-    void AttackSickle() {
-        Instantiate(sickle, transform.position, transform.rotation);
+
+    [Tooltip("弓箭")]
+    public GameObject arrow;
+
+    void AttackArrow() {
+        Instantiate(arrow, transform.position, transform.rotation);
     }
 }
