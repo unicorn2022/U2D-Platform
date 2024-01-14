@@ -3,8 +3,22 @@ using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
 
-public class TrashBin : MonoBehaviour
-{
+public class TrashBin : MonoBehaviour {
+    #region Input System 的绑定
+    private PlayerInputActions controls;
+
+    void Awake() {
+        controls = new PlayerInputActions();
+        controls.GamePlay.Communicate.started += ctx => CommunicateWithTrashBin();
+    }
+    void OnEnable() {
+        controls.GamePlay.Enable();
+    }
+    void OnDisable() {
+        controls.GamePlay.Disable();
+    }
+    #endregion
+
     [Tooltip("垃圾桶内金币数量")]
     public int coinCurrent = 0;
     [Tooltip("垃圾桶内金币数量上限")]
@@ -12,9 +26,8 @@ public class TrashBin : MonoBehaviour
 
     private bool isPlayerInTrashBin = false;    // 玩家是否进入了垃圾桶范围
 
-    void Update() {
-        // 按下F键投币
-        if (Input.GetKeyDown(KeyCode.F) && isPlayerInTrashBin && coinCurrent < coinMax && UICoin.coinNumber > 0) {
+    void CommunicateWithTrashBin() {
+        if (isPlayerInTrashBin && coinCurrent < coinMax && UICoin.coinNumber > 0) {
             UICoin.coinNumber--;
             coinCurrent++;
             SoundManager.instance.PlayThrowCoin();

@@ -3,6 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour {
+    #region Input System 的绑定
+    private PlayerInputActions controls;
+
+    void Awake() {
+        controls = new PlayerInputActions();
+
+        controls.GamePlay.Attack.started += ctx => Attack();
+    }
+    void OnEnable() {
+        controls.GamePlay.Enable();
+    }
+    void OnDisable() {
+        controls.GamePlay.Disable();
+    }
+    #endregion
+    
     [Tooltip("角色攻击的伤害")]
     public int damage = 2;
 
@@ -16,16 +32,12 @@ public class PlayerAttack : MonoBehaviour {
         collider = GetComponent<PolygonCollider2D>();
     }
 
-    void Update() {
-        Attack();
-    }
-
     /// <summary>
     /// 角色攻击, 及其动画的切换
     /// </summary>
     void Attack() {
-        // 由于控制了最短攻击间隔为0.5s, 因此可以长按攻击键持续攻击
-        if (Input.GetButton("Attack") && canAttack) {
+        // 由于控制了最短攻击间隔, 因此可以长按攻击键持续攻击
+        if (canAttack) {
             animator.SetTrigger("Attack");
             canAttack = false;
         }

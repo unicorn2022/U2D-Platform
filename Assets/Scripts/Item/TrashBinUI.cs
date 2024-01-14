@@ -20,7 +20,7 @@ public class TrashBinUI : MonoBehaviour
     private Text coinNumberText;        // 垃圾桶显示金币数量的Text组件
 
     void Start() {
-        GameObject gameObject = Instantiate(uiPrefab, GameObject.Find("Canvas").transform);
+        GameObject gameObject = Instantiate(uiPrefab, GameObject.Find("CanvasLevel").transform);
         trashBinUI = gameObject.GetComponent<RectTransform>();
         coinNumberImage = gameObject.transform.GetChild(0).GetComponent<Image>();
         coinNumberText = gameObject.transform.GetChild(1).GetComponent<Text>();

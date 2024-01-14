@@ -1,6 +1,6 @@
 [TOC]
 
-# 01、导入序列帧动画
+# 01、角色：导入序列帧动画
 
 原始动画资源：`Assets/Sprite/Player/PlayerSheet.png`
 
@@ -2003,7 +2003,7 @@ public class PlayerAttackBomb : MonoBehaviour {
 }
 ```
 
-# 35、切换游戏关卡
+# 35、场景：切换游戏关卡
 
 传送门素材：`Assets/Sprite/ForeGround/Item/Door`
 
@@ -2168,3 +2168,88 @@ IEnumerator AsyncLoadLevel(int sceneIndex) {
 }
 ```
 
+# 39、Input System：支持XBox和PS4手柄
+
+安装包：`Input System`
+
+打开**窗口|分析|Input Debugger**，可以看到当前的输入设备
+
+<img src="AssetMarkdown/image-20240114161022481.png" alt="image-20240114161022481" style="zoom:80%;" />
+
+新建**Input Actions**，重命名为`PlayerInputActions`，勾选`Generate C# Class`，双击打开
+
+- 新建**Action Maps**，重命名为`GamePlay`
+- 添加**Control Scheme**，重命名为`KeyBoard`
+  - 新建**Actions**，重命名为`Move`
+    - **Action Type**设置为`值`，`Control Type`设置为`Vector 2`
+    - 添加**Up\Down\Left\Right Composite**，重命名为`WASD`，设置四个方向分别对应`WASD`
+    - 添加**Up\Down\Left\Right Composite**，重命名为`Arrow`，设置四个方向分别对应`↑↓←→`
+  - 与此类似，分别创建`Jump、Attack、Bomb、Sickle、Communicate、Pause`的**Actions**
+
+<img src="AssetMarkdown/image-20240114172439844.png" alt="image-20240114172439844" style="zoom:80%;" />
+
+- 添加**Control Scheme**，重命名为`XBoxGamePad`
+  - 分别创建`Move、Jump、Attack、Bomb、Sickle、Communicate、Pause`的**Actions**
+
+<img src="AssetMarkdown/image-20240114172517930.png" alt="image-20240114172517930" style="zoom:80%;" />
+
+修改所有与输入相关的脚本：
+
+- 获取值 => `ctx.ReadValue<>()`
+- 获取点击事件 => 直接调用对应的事件
+
+`PlayerController`
+
+```c#
+#region Input System 的绑定
+private PlayerInputActions controls;
+private Vector2 control_move;
+
+void Awake() {
+    controls = new PlayerInputActions();
+
+    controls.GamePlay.Move.performed += ctx => control_move = ctx.ReadValue<Vector2>();
+    controls.GamePlay.Move.canceled += ctx => control_move = Vector2.zero;
+
+    controls.GamePlay.Jump.started += ctx => Jump();
+}
+void OnEnable() {
+    controls.GamePlay.Enable();
+}
+void OnDisable() {
+    controls.GamePlay.Disable();
+}
+#endregion
+```
+
+`PlayerAttackBomb`
+
+```c#
+public class PlayerAttackBomb : MonoBehaviour { 
+    [Tooltip("炸弹")]
+    public GameObject bomb;
+
+    #region Input System 的绑定
+    private PlayerInputActions controls;
+    private Vector2 control_move;
+
+    void Awake() {
+        controls = new PlayerInputActions();
+
+        controls.GamePlay.Bomb.started += ctx => AttackBomb();
+    }
+    void OnEnable() {
+        controls.GamePlay.Enable();
+    }
+    void OnDisable() {
+        controls.GamePlay.Disable();
+    }
+    #endregion
+
+    void AttackBomb() {
+        Instantiate(bomb, transform.position, transform.rotation);
+    }
+}
+```
+
+`PlayerAttackSickle、PlayerAttack、Sign、TrashBin、TreasureBox、PauseMenu`

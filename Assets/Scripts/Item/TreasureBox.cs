@@ -3,6 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TreasureBox : MonoBehaviour {
+    #region Input System 的绑定
+    private PlayerInputActions controls;
+
+    void Awake() {
+        controls = new PlayerInputActions();
+        controls.GamePlay.Communicate.started += ctx => CommunicateWithTreasureBox();
+    }
+    void OnEnable() {
+        controls.GamePlay.Enable();
+    }
+    void OnDisable() {
+        controls.GamePlay.Disable();
+    }
+    #endregion
+
     [Tooltip("宝箱中的物品")]
     public GameObject coin;
 
@@ -14,9 +29,8 @@ public class TreasureBox : MonoBehaviour {
         animator = GetComponent<Animator>();
     }
 
-    void Update() {
-        // F键开启宝箱
-        if (canOpen && !isOpened && Input.GetKeyDown(KeyCode.F)) {
+    void CommunicateWithTreasureBox() {
+        if (canOpen && !isOpened) {
             animator.SetTrigger("Open");
             isOpened = true;
         }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - CameraShake
+  - Canvas
   layers:
   - Default
   - TransparentFX

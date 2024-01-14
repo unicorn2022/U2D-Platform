@@ -4,16 +4,29 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
+    #region Input System 的绑定
+    private PlayerInputActions controls;
+
+    void Awake() {
+        controls = new PlayerInputActions();
+        controls.GamePlay.Pause.started += ctx => CommunicateWithPauseMenu();
+    }
+    void OnEnable() {
+        controls.GamePlay.Enable();
+    }
+    void OnDisable() {
+        controls.GamePlay.Disable();
+    }
+    #endregion
+
     [Tooltip("游戏是否暂停")]
     public static bool isPaused = false;
     [Tooltip("暂停菜单UI")]
     public GameObject pauseMenuUI;
 
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            if (isPaused) ResumeGame();
-            else PauseGame();
-        }
+    void CommunicateWithPauseMenu() {
+        if (isPaused) ResumeGame();
+        else PauseGame();
     }
 
     /// <summary>
