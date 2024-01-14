@@ -2310,3 +2310,39 @@ public class DoorEnter : MonoBehaviour {
 }
 ```
 
+# 41、UI：支持多语言
+
+下载第三方插件：`Lean Localization`
+
+新建**Lean|Localization**，重命名为`LeanLocalizationMainMenu`
+
+- **Languages**新增两种语言，重命名为：`Chinese`、`English`
+- **Translation**新增两个目标：`PlayButton`、`ExitButton`
+  - **PlayButton**的**Text**分别为：`开始游戏`、`PLAY`
+  - **QuitButton**的**Text**分别为：`退出游戏`、`QUIT`
+
+为`PlayButton`的`Text`新增组件：`Lean Localized Text`
+
+- **Translation Name**：PlayButton
+
+为`QuitButton`的`Text`新增组件：`Lean Localized Text`
+
+- **Translation Name**：QuitButton
+
+修改`LeanLocalization`的`CurrentLanguage`属性，即可实现切换语言
+
+
+
+在菜单中，新建
+
+- **UI|切换**，重命名为`ToggleEnglish`，将其添加到`LeanLocalizationMainMenu`中
+  - 添加事件：`LeanLocalizationMainMenu`对象的`LeanLocalizatio`脚本的`SetCurrentLanguage`函数，参数为`English`
+- **UI|切换**，重命名为`ToggleChinese`，将其添加到`LeanLocalizationMainMenu`中
+  - 添加事件：`LeanLocalizationMainMenu`对象的`LeanLocalizatio`脚本的`SetCurrentLanguage`函数，参数为`Chinese`
+
+新建空对象，重命名为`ChangeLanguage`
+
+- 添加组件：`Toggle Group`
+- 作为`ToggleEnglish`和`ToggleChinese`的父对象
+
+- 将`ToggleGroup`作为`ToggleEnglish`和`ToggleChinese`的**Group**属性
