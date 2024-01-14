@@ -2225,18 +2225,52 @@ void OnDisable() {
 `PlayerAttackBomb`
 
 ```c#
-public class PlayerAttackBomb : MonoBehaviour { 
-    [Tooltip("炸弹")]
-    public GameObject bomb;
+#region Input System 的绑定
+private PlayerInputActions controls;
+private Vector2 control_move;
 
+void Awake() {
+    controls = new PlayerInputActions();
+    controls.GamePlay.Bomb.started += ctx => AttackBomb();
+}
+void OnEnable() {
+    controls.GamePlay.Enable();
+}
+void OnDisable() {
+    controls.GamePlay.Disable();
+}
+#endregion
+```
+
+`PlayerAttackSickle、PlayerAttack、Sign、TrashBin、TreasureBox、PauseMenu`
+
+# 40、场景：传送门
+
+传送门素材：`Assets/Sprite/ForeGround/Item/DoorEnter`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将传送门 添加到场景中
+
+- **排序图层**：Item
+- **图层**：TriggerBox（仅与Enemy、Player碰撞）
+- 添加组件：
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`DoorEnter`
+
+新建脚本：`DoorEnter`
+
+```c#
+public class DoorEnter : MonoBehaviour {
     #region Input System 的绑定
     private PlayerInputActions controls;
-    private Vector2 control_move;
 
     void Awake() {
         controls = new PlayerInputActions();
-
-        controls.GamePlay.Bomb.started += ctx => AttackBomb();
+        controls.GamePlay.Communicate.started += ctx => CommunicateWithDoor();
     }
     void OnEnable() {
         controls.GamePlay.Enable();
@@ -2246,10 +2280,33 @@ public class PlayerAttackBomb : MonoBehaviour {
     }
     #endregion
 
-    void AttackBomb() {
-        Instantiate(bomb, transform.position, transform.rotation);
+    [Tooltip("传送的目标位置")]
+    public Transform targetPosition;
+
+    private bool isInDoor;
+    private Transform playerTransform;
+
+    void Start() {
+        playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+    }
+
+    void CommunicateWithDoor() {
+        if (isInDoor) {
+            playerTransform.position = targetPosition.position;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            isInDoor = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player") && collision.GetType().ToString() == "UnityEngine.CapsuleCollider2D") {
+            isInDoor = false;
+        }
     }
 }
 ```
 
-`PlayerAttackSickle、PlayerAttack、Sign、TrashBin、TreasureBox、PauseMenu`
