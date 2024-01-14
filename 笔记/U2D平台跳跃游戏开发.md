@@ -2346,3 +2346,48 @@ public class DoorEnter : MonoBehaviour {
 - 作为`ToggleEnglish`和`ToggleChinese`的父对象
 
 - 将`ToggleGroup`作为`ToggleEnglish`和`ToggleChinese`的**Group**属性
+
+# 42、敌人：追击玩家
+
+将蝙蝠添加到场景中，重命名为`SmartBat`
+
+- **排序图层**：Enemy
+- **图层**：Enemy
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Kinematic
+    - **碰撞检测**：连续
+    - **休眠模式**：从不休眠
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - `Animator`
+    - **控制器**：`EnemyBat`
+  - 自定义脚本：`EnemySmartBat`
+
+新建脚本：`EnemySmartBat`
+
+```c#
+public class EnemySmartBat : Enemy {
+    [Tooltip("敌人的移动速度")]
+    public float speed = 2f;
+    [Tooltip("当玩家与敌人距离一定范围以内, 敌人开始追击玩家")]
+    public float radius = 15f;
+
+    private Transform playerTransform;
+
+    void Start() {
+        base.Start();
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
+    void Update() {
+        base.Update();
+
+        // 如果玩家在一定范围内, 敌人开始追击玩家
+        if (playerTransform != null && Vector3.Distance(transform.position, playerTransform.position) < radius) {
+            transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, speed * Time.deltaTime);
+        }
+    }
+}
+```
+
