@@ -15,15 +15,13 @@ public class EnemyBat : Enemy {
 
     private float waitTime;             // 敌人移动的等待时间
     private Vector2 targetPosition;     // 敌人移动的目标位置
-    protected void Start()
-    {
+    protected void Start() {
         base.Start();
         waitTime = startWaitTime;
         targetPosition = GetRandomPosition();
     }
 
-    protected void Update()
-    {
+    protected void Update() {
         base.Update();
 
         transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
@@ -35,6 +33,10 @@ public class EnemyBat : Enemy {
                 waitTime -= Time.deltaTime;
             }
         }
+    }
+
+    void OnDestroy() {
+        Destroy(transform.parent.gameObject);
     }
 
     /// <summary>
