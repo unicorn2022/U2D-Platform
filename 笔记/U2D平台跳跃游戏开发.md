@@ -2592,3 +2592,84 @@ public class TrapPlatform : MonoBehaviour {
 }
 ```
 
+# 46、角色：鼠标点击发射子弹
+
+枪素材：`Assets/Sprite/Player/Gun`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+子弹素材：`Assets/Sprite/Player/Bullet`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将枪添加到场景中，作为Player的子对象
+
+- **排序图层**：Player
+- 添加空子对象，重命名为`Muzzle`，用于标记枪口的位置
+- 添加自定义脚本：`Gun`
+
+```c#
+public class Gun : MonoBehaviour {
+    [Tooltip("子弹预制体")]
+    public GameObject bullet;
+    [Tooltip("子弹发射位置")]
+    public Transform muzzlePosition;
+
+    private Vector3 mousePosition;
+    private Vector2 gunDirection;
+
+    void Update() {
+        mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        gunDirection = (mousePosition - transform.position).normalized;
+        float angle = Mathf.Atan2(gunDirection.y, gunDirection.x) * Mathf.Rad2Deg;
+        transform.eulerAngles = new Vector3(0, 0, angle);
+
+        if(Mouse.current.leftButton.wasPressedThisFrame) {
+            Instantiate(bullet, muzzlePosition.position, Quaternion.Euler(transform.eulerAngles));
+        }
+    }
+}
+```
+
+在`Arrow`的基础上，做`Bullet`的预制体
+
+- 修改Sprite Renderer、Box Collider2D
+- 添加自定义脚本：`Bullet`
+
+```c#
+public class Bullet : MonoBehaviour {
+    [Tooltip("子弹的移动速度")]
+    public float speed = 15f;
+    [Tooltip("子弹的伤害值")]
+    public int damage = 2;
+    [Tooltip("子弹的最大飞行距离")]
+    public float maxDistance = 15f;
+
+    private Rigidbody2D rigidbody;
+    private Vector2 startPosition;
+
+    void Start() {
+        rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody.velocity = transform.right * speed;
+        startPosition = transform.position;
+    }
+
+    void Update() {
+        if (Vector2.Distance(transform.position, startPosition) > maxDistance) {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Enemy")) {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            Destroy(gameObject);
+        }
+    }
+}
+```
+
