@@ -2686,7 +2686,7 @@ public class Bullet : MonoBehaviour {
 
 - 每个单元的尺寸：24×24像素
 
-将敌人平台添加到场景中
+将敌人添加到场景中
 
 - **排序图层**：Enemy
 - **图层**：Enemy
@@ -2754,3 +2754,77 @@ public class EnemySnake : Enemy {
 
 - Time.DeltaTime
   - 需要自己保存剩余时间的时间，在Update方法中更新等待时间
+
+# 49、场景：隐藏地刺陷阱
+
+隐藏地刺陷阱素材：`Assets/Sprite/ForeGround/HideSpike`
+
+- **Sprite 模式**：多个
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割并创建动画：
+
+- 每个单元的尺寸：16×16像素
+- Idle => Attack：触发器`Attack`
+
+<img src="AssetMarkdown/image-20240116204420522.png" alt="image-20240116204420522" style="zoom:80%;" />
+
+将隐藏地刺陷阱添加到场景中
+
+- **排序图层**：Spike
+- **图层**：Item
+- 添加组件：
+  - `Boc Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`HideSpike`
+
+```c#
+public class HideSpike : MonoBehaviour {
+    [Tooltip("造成伤害的碰撞体")]
+    public GameObject hideSpikeBox;
+
+    private Animator animator;
+
+    void Start() {
+        animator = GetComponent<Animator>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.PolygonCollider2D") {
+            animator.SetTrigger("Attack");
+            hideSpikeBox.SetActive(true);
+        }
+    }
+}
+```
+
+为隐藏地刺陷阱添加空子对象，重命名为`HideSpikeBox`
+
+- **图层**：TriggerBox
+  - **只与Player进行碰撞**
+- 添加组件：
+  - `Box Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`HideSpikeBox`
+
+```c#
+public class HideSpikeBox : MonoBehaviour {
+    [Tooltip("对玩家的伤害")]
+    public int damage = 1;
+
+    private PlayerHealth playerHealth;
+
+    void Start() {
+        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.PolygonCollider2D") {
+            playerHealth.TakeDamage(damage);
+        }
+    }
+}
+```
+
