@@ -2828,3 +2828,52 @@ public class HideSpikeBox : MonoBehaviour {
 }
 ```
 
+# 50、场景：可破坏Tilemap
+
+原始瓦片资源：`Assets/Sprite/WallTile/WallTile0.png`
+
+新建**2D对象|瓦片地图|矩形**，重命名为`DestructableLayer`
+
+- **图层**：DestructableLayer（只与Player、TriggerBox碰撞）
+- **排序图层**：ForeGround
+- 为`ForeGround`添加组件
+  - `Tilemap Collider 2D`：添加碰撞功能
+  - `Rigid Body 2D`：
+    - **身体类型**：Kinematic
+  - 自定义脚本：`DestructableLayer`
+
+```c#
+public class DestructableLayer : MonoBehaviour {
+    [Tooltip("破坏层的偏移量")]
+    public Vector2 offset = new Vector2(0.2f, 0.2f);
+
+    private Tilemap destructableTilemap;
+    private Vector3[] position = new Vector3[8];
+
+    void Start() {
+        destructableTilemap = GetComponent<Tilemap>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Bullet") {
+            Vector3 hitPosition = collision.bounds.ClosestPoint(collision.transform.position);
+            position[0] = new Vector3(hitPosition.x, hitPosition.y + offset.y, 0f);
+            position[1] = new Vector3(hitPosition.x, hitPosition.y - offset.y, 0f);
+            position[2] = new Vector3(hitPosition.x + offset.x, hitPosition.y , 0f);
+            position[3] = new Vector3(hitPosition.x + offset.x, hitPosition.y + offset.y, 0f);
+            position[4] = new Vector3(hitPosition.x + offset.x, hitPosition.y - offset.y, 0f);
+            position[5] = new Vector3(hitPosition.x - offset.x, hitPosition.y, 0f);
+            position[6] = new Vector3(hitPosition.x - offset.x, hitPosition.y + offset.y, 0f);
+            position[7] = new Vector3(hitPosition.x - offset.x, hitPosition.y - offset.y, 0f);
+        
+            for(int i = 0; i < 8; i++) {
+                Vector3Int pos = destructableTilemap.WorldToCell(position[i]);
+                destructableTilemap.SetTile(pos, null);
+            }
+
+            Destroy(collision.gameObject);
+        }
+    }
+}
+```
+

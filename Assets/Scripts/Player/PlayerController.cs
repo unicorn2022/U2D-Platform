@@ -73,7 +73,8 @@ public class PlayerController : MonoBehaviour {
         // 碰撞检测参数
         isGrounded = feetCollider.IsTouchingLayers(LayerMask.GetMask("ForeGround"))
             || feetCollider.IsTouchingLayers(LayerMask.GetMask("MovingPlatform"))
-            || feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"))
+            || feetCollider.IsTouchingLayers(LayerMask.GetMask("DestructableLayer"));
         isOneWayPlatform = feetCollider.IsTouchingLayers(LayerMask.GetMask("OneWayPlatform"));
         isLadder = feetCollider.IsTouchingLayers(LayerMask.GetMask("Ladder"));
 
