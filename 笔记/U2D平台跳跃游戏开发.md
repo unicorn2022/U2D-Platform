@@ -2252,7 +2252,7 @@ void OnDisable() {
 - **过滤模式**：点（无过滤器）
 - **压缩**：无
 
-将传送门 添加到场景中
+将传送门添加到场景中
 
 - **排序图层**：Item
 - **图层**：TriggerBox（仅与Enemy、Player碰撞）
@@ -2535,6 +2535,59 @@ public class EastEggID : MonoBehaviour {
 
     void OnDestroy() {
         EastEgg.Password += eggID.ToString();
+    }
+}
+```
+
+# 45、场景：破碎陷阱平台
+
+破碎陷阱平台素材：`Assets/Sprite/ForeGround/TrapPlatform`
+
+- **Sprite 模式**：多个
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割并创建动画：
+
+- 每个单元的尺寸：48×48像素
+- Idle => Collapse：触发器`Collapse`
+
+<img src="AssetMarkdown/image-20240116193144908.png" alt="image-20240116193144908" style="zoom:80%;" />
+
+将破碎陷阱平台添加到场景中
+
+- **排序图层**：Item
+- **图层**：MovingPlatform
+- 添加组件：
+  - `Boc Collider 2D`
+    - **是触发器**：不勾选
+  - 自定义脚本：`TrapPlatform`
+
+新建脚本：`TrapPlatform`
+
+```c#
+public class TrapPlatform : MonoBehaviour {
+    private Animator animator;
+    private BoxCollider2D boxCollider;
+
+    void Start() {
+        animator = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.BoxCollider2D") {
+            animator.SetTrigger("Collapse");
+        }
+    }
+
+    void DisableBoxCollider2D() {
+        boxCollider.enabled = false;
+    }
+
+    void DestroyTrapPlatform() {
+        Destroy(gameObject);
     }
 }
 ```
