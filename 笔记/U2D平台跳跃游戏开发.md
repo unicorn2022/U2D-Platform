@@ -2877,3 +2877,23 @@ public class DestructableLayer : MonoBehaviour {
 }
 ```
 
+# 51、场景：风力区域
+
+风力区域素材：`Assets/Sprite/ForeGround/Wind`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将风力区域添加到场景中
+
+- **排序图层**：ForeGround
+- **图层**：TriggerBox
+- 添加组件：
+  - `Boc Collider 2D`
+    - **是触发器**：勾选
+    - **由效果器使用**：勾选
+  - `Area Effector 2D`
+    - **碰撞器遮罩**：只与Player交互
+    - **Force|力角度**：90
+    - **Force|力度**：30
