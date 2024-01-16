@@ -8,6 +8,7 @@ TagManager:
   - CameraShake
   - Canvas
   - Bullet
+  - YellowStar
   layers:
   - Default
   - TransparentFX

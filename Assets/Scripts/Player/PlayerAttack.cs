@@ -51,6 +51,9 @@ public class PlayerAttack : MonoBehaviour {
         if (collision.gameObject.tag.Equals("Enemy")) {
             collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
         }
+        if (collision.gameObject.tag.Equals("YellowStar")) {
+            collision.gameObject.GetComponent<YellowStar>().GenerateGift();
+        }
     }
 
 

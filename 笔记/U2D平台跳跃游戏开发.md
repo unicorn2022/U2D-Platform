@@ -2897,3 +2897,62 @@ public class DestructableLayer : MonoBehaviour {
     - **碰撞器遮罩**：只与Player交互
     - **Force|力角度**：90
     - **Force|力度**：30
+
+# 52、场景：随即物品掉落
+
+物品素材：`Assets/Sprite/Item/Gift/*.png`
+
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+将礼物添加到场景中
+
+- **排序图层**：Item
+- **图层**：Item
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Dynamic
+  - `Boc Collider 2D`
+    - **是触发器**：不勾选
+
+将星星添加到场景中
+
+- **排序图层**：Item
+- **图层**：TriggerBox
+- **Tag**：YellowStar
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：静态
+  - `Boc Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`YellowStar`
+
+```c#
+public class YellowStar : MonoBehaviour {
+    [Tooltip("礼物的预制体")]
+    public GameObject[] gifts;
+
+    public void GenerateGift() {
+        int index = Random.Range(0, gifts.Length);
+        Instantiate(gifts[index], transform.position, Quaternion.identity);
+        Destroy(gameObject);
+    }
+}
+```
+
+修改脚本：`PlayerAttack`
+
+- 将`PlayerAttack`对象的**图层**修改为`TriggerBox`，并让`TriggerBox`与自己碰撞
+
+```c#
+private void OnTriggerEnter2D(Collider2D collision) {
+    if (collision.gameObject.tag.Equals("Enemy")) {
+        collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+    }
+    if (collision.gameObject.tag.Equals("YellowStar")) {
+        collision.gameObject.GetComponent<YellowStar>().GenerateGift();
+    }
+}
+```
+
