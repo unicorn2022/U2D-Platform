@@ -295,7 +295,7 @@ public class PlayerAttack : MonoBehaviour {
 }
 ```
 
-# 09、角色攻击：Enemy
+# 09、敌人：蝙蝠
 
 敌人素材：`Assets/Sprite/Bat.png`
 
@@ -2668,6 +2668,77 @@ public class Bullet : MonoBehaviour {
         if (collision.gameObject.CompareTag("Enemy")) {
             collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
             Destroy(gameObject);
+        }
+    }
+}
+```
+
+# 47、敌人：地面爬行怪物
+
+敌人素材：`Assets/Sprite/Enemy/MiniSnake`
+
+- **Sprite 模式**：多个
+- **每单位像素数**：16（像素数越小，在场景中看起来越大）
+- **过滤模式**：点（无过滤器）
+- **压缩**：无
+
+切割并创建动画：
+
+- 每个单元的尺寸：24×24像素
+
+将敌人平台添加到场景中
+
+- **排序图层**：Enemy
+- **图层**：Enemy
+- 添加组件：
+  - `rigidbody 2D`
+    - **身体类型**：Kinematic
+    - **碰撞检测**：连续
+    - **休眠模式**：从不休眠
+  - `Boc Collider 2D`
+    - **是触发器**：勾选
+  - 自定义脚本：`EnemySnake`
+
+新建脚本：`EnemySnake`
+
+```c#
+public class EnemySnake : Enemy {
+    [Tooltip("敌人的移动速度")]
+    public float speed = 2f;
+    [Tooltip("敌人移动的等待时间")]
+    public float startWaitTime = 1f;
+    [Tooltip("爬行的目标位置-左")]
+    public Transform moveLeftPositions;
+    [Tooltip("爬行的目标位置-右")]
+    public Transform moveRightPositions;
+
+    private bool moveRight = true;
+    private float waitTime;             // 敌人移动的等待时间
+
+    protected void Start() {
+        base.Start();
+        waitTime = startWaitTime;
+    }
+
+    protected void Update() {
+        base.Update();
+        Vector3 targetPosition = moveRight ? moveRightPositions.position : moveLeftPositions.position;
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+    
+        if(Vector2.Distance(transform.position, targetPosition) < 0.1f) {
+            if (waitTime > 0) waitTime -= Time.deltaTime;
+            else {
+                // 转向
+                if (moveRight) {
+                    transform.eulerAngles = new Vector3(0, -180, 0);
+                    moveRight = false;
+                } else {
+                    transform.eulerAngles = new Vector3(0, 0, 0);
+                    moveRight = true;
+                }
+                // 重置等待时间
+                waitTime = startWaitTime;
+            }
         }
     }
 }
