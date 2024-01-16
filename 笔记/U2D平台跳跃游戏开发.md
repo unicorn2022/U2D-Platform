@@ -2744,3 +2744,13 @@ public class EnemySnake : Enemy {
 }
 ```
 
+# 48、三种延迟方法
+
+- 协程
+  - 等待的时间：`yield return new WaitForSeconds(1f);`
+
+- Invoke
+  - 调用的方法不能有参数
+
+- Time.DeltaTime
+  - 需要自己保存剩余时间的时间，在Update方法中更新等待时间
