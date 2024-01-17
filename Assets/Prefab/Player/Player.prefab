@@ -389,9 +389,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a627ef3a4556a74ebfdb4400cf156cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 5
   numBlinks: 5
   seconds: 0.1
+  deadMenu: {fileID: 0}
+  generatedUI: {fileID: 0}
 --- !u!114 &4632119038238224188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,7 +565,7 @@ GameObject:
   - component: {fileID: 2089343193798193340}
   - component: {fileID: 838687066034581285}
   - component: {fileID: 185983445838353227}
-  m_Layer: 7
+  m_Layer: 15
   m_Name: J-PlayerAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}

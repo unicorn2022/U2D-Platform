@@ -173,4 +173,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flySpeed: 20
   rotateSpeed: 30
-  damage: 2
+  damage: 1

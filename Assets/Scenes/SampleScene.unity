@@ -480,6 +480,10 @@ PrefabInstance:
       propertyPath: CanvasRect
       value: 
       objectReference: {fileID: 1471973935}
+    - target: {fileID: 304552789807943883, guid: eba05f3385d431b4fb61c7f5394233e4, type: 3}
+      propertyPath: generatedUI
+      value: 
+      objectReference: {fileID: 1307500905}
     - target: {fileID: 3712092420817500744, guid: eba05f3385d431b4fb61c7f5394233e4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.7
@@ -806,10 +810,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4771316601445080014, guid: 78628d8ee843ecb44806f79f8d971a63, type: 3}
   m_PrefabInstance: {fileID: 1066178024}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1249449790 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3152355550366591329, guid: bf53c37c17ce48242ba5d9c761975471, type: 3}
+  m_PrefabInstance: {fileID: 1968033911526316810}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1269591531 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3516707277498361876, guid: 943b9bda5b5fd074e89c1f5f060a9473, type: 3}
   m_PrefabInstance: {fileID: 8827014342562393490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1307500905 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4480905774929286005, guid: bf53c37c17ce48242ba5d9c761975471, type: 3}
+  m_PrefabInstance: {fileID: 1968033911526316810}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1331280870
 GameObject:
@@ -2332,14 +2346,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4078180110808397764, guid: 943b9bda5b5fd074e89c1f5f060a9473, type: 3}
+      propertyPath: deadMenu
+      value: 
+      objectReference: {fileID: 1249449790}
+    - target: {fileID: 4078180110808397764, guid: 943b9bda5b5fd074e89c1f5f060a9473, type: 3}
+      propertyPath: generatedUI
+      value: 
+      objectReference: {fileID: 1307500905}
     - target: {fileID: 4632119038238224188, guid: 943b9bda5b5fd074e89c1f5f060a9473, type: 3}
       propertyPath: image
       value: 
       objectReference: {fileID: 1997012157}
-    - target: {fileID: 6610740832654819175, guid: 943b9bda5b5fd074e89c1f5f060a9473, type: 3}
-      propertyPath: m_Layer
-      value: 15
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

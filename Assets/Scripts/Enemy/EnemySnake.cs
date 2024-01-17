@@ -13,10 +13,21 @@ public class EnemySnake : Enemy {
     [Tooltip("爬行的目标位置-右")]
     public Transform moveRightPositions;
 
-    private bool moveRight = true;
+    public bool moveRight = true;
     private float waitTime;             // 敌人移动的等待时间
 
     protected void Start() {
+        // 初始化随机运动
+        moveLeftPositions.localPosition = new Vector3(Random.Range(-5f, 0f), moveLeftPositions.localPosition.y, 0f);
+        moveRightPositions.localPosition = new Vector3(Random.Range(0f, 5f), moveRightPositions.localPosition.y, 0f);
+        startWaitTime = Random.Range(0.5f, 1.5f);
+        moveRight = Random.Range(0, 2) == 0;
+        if(moveRight) {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        } else {
+            transform.eulerAngles = new Vector3(0, -180, 0);
+        }
+
         base.Start();
         waitTime = startWaitTime;
     }

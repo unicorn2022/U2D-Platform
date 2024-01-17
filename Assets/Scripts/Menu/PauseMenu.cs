@@ -23,11 +23,22 @@ public class PauseMenu : MonoBehaviour {
     public static bool isPaused = false;
     [Tooltip("暂停菜单UI")]
     public GameObject pauseMenuUI;
+    [Tooltip("通过MainMenu脚本实现场景加载")]
+    public MainMenu mainMenu;
 
     void CommunicateWithPauseMenu() {
         if (isPaused) ResumeGame();
         else PauseGame();
     }
+
+    /// <summary>
+    /// 重新开始游戏
+    /// </summary>
+    public void ReloadGame() {
+        int index = SceneManager.GetActiveScene().buildIndex;
+        mainMenu.LoadLevel(index);
+    }
+
 
     /// <summary>
     /// 继续游戏

@@ -23,6 +23,8 @@ public class TrashBin : MonoBehaviour {
     public int coinCurrent = 0;
     [Tooltip("垃圾桶内金币数量上限")]
     public int coinMax = 10;
+    [Tooltip("金币满后, 可以激活的物体")]
+    public GameObject[] activeObjects;
 
     private bool isPlayerInTrashBin = false;    // 玩家是否进入了垃圾桶范围
 
@@ -31,6 +33,11 @@ public class TrashBin : MonoBehaviour {
             UICoin.coinNumber--;
             coinCurrent++;
             SoundManager.instance.PlayThrowCoin();
+        }
+
+        if(coinCurrent == coinMax) {
+            for(int i = 0; i < activeObjects.Length; i++)
+                activeObjects[i].SetActive(true);
         }
     }
 

@@ -9,7 +9,8 @@ public class DoorToNextLevel : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag == "Player" && collision.GetType().ToString() == "UnityEngine.PolygonCollider2D") {
-            mainMenu.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+            int index = SceneManager.GetActiveScene().buildIndex;
+            mainMenu.LoadLevel(index + 1);
         }
     }
 }

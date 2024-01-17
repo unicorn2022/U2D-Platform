@@ -7,6 +7,8 @@ public class TrashBinUI : MonoBehaviour
 {
     [Tooltip("全局UI画布")]
     public RectTransform CanvasRect;
+    [Tooltip("生成的UI的总父对象")]
+    public GameObject generatedUI;
 
     [Tooltip("垃圾桶UI预制件")]
     public GameObject uiPrefab;
@@ -21,6 +23,7 @@ public class TrashBinUI : MonoBehaviour
 
     void Start() {
         GameObject gameObject = Instantiate(uiPrefab, GameObject.Find("CanvasLevel").transform);
+        gameObject.transform.SetParent(generatedUI.transform);
         trashBinUI = gameObject.GetComponent<RectTransform>();
         coinNumberImage = gameObject.transform.GetChild(0).GetComponent<Image>();
         coinNumberText = gameObject.transform.GetChild(1).GetComponent<Text>();

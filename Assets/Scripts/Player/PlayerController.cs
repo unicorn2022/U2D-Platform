@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     #region Input System 的绑定
     private PlayerInputActions controls;
-    private Vector2 control_move;
+    public Vector2 control_move;
 
     void Awake() {
         controls = new PlayerInputActions();
@@ -179,9 +179,6 @@ public class PlayerController : MonoBehaviour {
 
     #region 角色爬梯子
     void Climb() {
-        // 角色在单向移动平台上, 不能爬梯子
-        if (isOneWayPlatform) return;
-
         // 角色在梯子上
         if (isLadder) {
             // 角色不受重力影响
@@ -193,10 +190,12 @@ public class PlayerController : MonoBehaviour {
                 animator.SetBool("Climb", true);
                 rigidbody.velocity = new Vector2(rigidbody.velocity.x, moveY * climbSpeed);
             } 
-            // 角色从梯子上跳跃
+            // 角色在起跳or下落时接触梯子
             else if (isJumping || isFalling){
                 animator.SetBool("Climb", false);
-            } 
+                animator.SetBool("Jump", false);
+                animator.SetBool("Fall", false);
+            }
             // 角色停在梯子上
             else {
                 animator.SetBool("Climb", false);

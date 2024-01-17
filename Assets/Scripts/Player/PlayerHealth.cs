@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
-{
+public class PlayerHealth : MonoBehaviour {
     [Tooltip("玩家的生命值")]
     public int health = 5;
     [Tooltip("玩家受到伤害后闪烁的次数")]
     public int numBlinks = 5;
     [Tooltip("玩家受到伤害后闪烁的时间")]
     public float seconds = 0.1f;
+    [Tooltip("死亡后显示的菜单")]
+    public GameObject deadMenu;
+    [Tooltip("生成的UI的总父对象")]
+    public GameObject generatedUI;
 
     private Renderer playerRenderer;        // 玩家的 Renderer 组件
     private Animator playerAnimator;        // 玩家的 Animator 组件
@@ -27,6 +30,7 @@ public class PlayerHealth : MonoBehaviour
         // 初始化血量条
         UIHealthBar.HealthMax = health;
         UIHealthBar.HealthCurrent = health;
+        GameController.isPlayerAlive = true;
     }
 
     /// <summary>
@@ -84,5 +88,7 @@ public class PlayerHealth : MonoBehaviour
     /// </summary>
     void KillPlayer() {
         Destroy(gameObject);
+        deadMenu.SetActive(true);
+        generatedUI.SetActive(false);
     }
 }

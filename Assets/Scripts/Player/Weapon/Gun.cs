@@ -18,7 +18,7 @@ public class Gun : MonoBehaviour {
         float angle = Mathf.Atan2(gunDirection.y, gunDirection.x) * Mathf.Rad2Deg;
         transform.eulerAngles = new Vector3(0, 0, angle);
 
-        if(Mouse.current.leftButton.wasPressedThisFrame) {
+        if(Mouse.current.leftButton.isPressed) {
             Instantiate(bullet, muzzlePosition.position, Quaternion.Euler(transform.eulerAngles));
         }
     }

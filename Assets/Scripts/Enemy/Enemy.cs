@@ -73,8 +73,6 @@ public class Enemy : MonoBehaviour {
             if(playerHealth != null) {
                 // 玩家受到伤害
                 playerHealth.TakeDamage(damage);
-                // 敌人受到伤害
-                TakeDamage(damage);
             }
         }
     }
