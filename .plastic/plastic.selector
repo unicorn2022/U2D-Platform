@@ -1,0 +1,4 @@
+repository "U2D-Platform@wechat_os_qy02rjjod9u3z5rsyu26g9toq@cloud.cn"
+  path "/"
+    br "/main"
+    co "/main"
